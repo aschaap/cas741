@@ -1,15 +1,15 @@
 \documentclass{article}
 
-\usepackage[margin=4cm]{geometry}
+\usepackage[margin=3.8cm]{geometry}
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{hyperref}
 
 \title{CAS 741: Problem Statement\\rkf45.ml}
 
-\author{Alexander Schaap schaapal}
+\author{Alexander Schaap (schaapal)}
 
-\date{September 15, 2017}
+\date{September 18, 2017}
 
 \input{../Comments}
 
@@ -22,6 +22,9 @@
 \begin{tabularx}{\textwidth}{llX}
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
+\midrule
+Sept 18 & Alex & Addressed Dr.~Smith's feedback; toned down metaprogramming,
+removed RKF45, emphasized ODE solver family library\\
 \midrule
 Sept 15 & Alex & Initial version\\
 \bottomrule
@@ -36,32 +39,61 @@ Sept 15 & Alex & Initial version\\
 %
 %\als{comment}
 
-Scientists in many areas use ordinary differential equations (ODEs) in their research.
-While many solvers exist already, a new programming paradigm may provide performance benefits over existing approaches.
+Scientists in many areas use ordinary differential equations (ODEs) in their
+research. For this reason, the goal of this project is to create a family of ODE
+solvers in the form of a reusable library.
 
-Multi-stage is a metaprogramming paradigm in which type-safe code fragments are created and combined.
-Its goal is enable development of ``generic software that does not pay a runtime penalty for this generality''\footnote{\url{https://web.archive.org/web/20170804032218/http://www.cs.rice.edu/~taha/publications/journal/dspg04a.pdf}}.
-(Note that this heavily implies a compile-time penalty.)
-Multi-stage programming allows for potentially every bit of information known at compile-time to be optimized out of the generated code.
-Doing this can lead to significant performance benefits, which ultimately allow users of programs constructed in this way to focus more on their other activities.
+While many solvers exist already, the emphasis on reuse hopefully spares
+scientists the effort of reimplementing these functions over and over, along
+with the associated increased chance of software bugs. Additionally, a new
+programming paradigm may both save time while creating the program family as
+well as provide performance benefits over existing
+approaches.\footnote{\url{https://arxiv.org/pdf/1612.06668}}
 
-A popular method for numerical approximation of ODEs is the Runge-Kutta-Fehlberg (RKF45) method.
-(The 4 in the abbreviation comes from the method being of order O($h^4$) and the 5 signifies the error estimator of order O($h^5$).
-This method has been implemented in a multi-stage programming language called
-MetaOCaml by Dr. J. Carette. \wss{put a slash (or tilde) after the period to get the
-    spacing right. That is, it should be Dr.\ J.\ Carette.  Otherwise LaTeX
-    interprets a period as the end of a sentence and leaves two spaces.}
-The goal therefore would be to recreate and improve this implementation.
+Multi-stage programming (MSP) is a metaprogramming paradigm.
+%in which type-safe code fragments are created and combined.
+Its goal is to enable development of ``generic software that does not pay a
+runtime penalty for this
+generality''\footnote{\url{https://web.archive.org/web/20170804032218/http://www.cs.rice.edu/~taha/publications/journal/dspg04a.pdf}}.
+%(Note that this heavily implies a compile-time penalty.)
+MSP allows programmers to generate entire product families once all possible
+variabilities have been accounted for. It also has the potential for
+%enables potentially every bit of information known at compile-time to be
+%optimized out of the generated code. Doing this can lead to significant
+performance benefits, which ultimately allow users of programs constructed in
+this way to focus more on their other activities.
+
+%A popular method for numerical approximation of ODEs is the
+%Runge-Kutta-Fehlberg (RKF45) method. (The 4 in the abbreviation comes from the
+%method being of order O($h^4$) and the 5 signifies the error estimator of order
+%O($h^5$). This method has been implemented in a multi-stage programming
+%language called MetaOCaml by Dr.~J.~Carette. \wss{put a slash (or tilde) after
+%the period to get the spacing right. That is, it should be Dr.\ J.\ Carette.
+%Otherwise LaTeX interprets a period as the end of a sentence and leaves two
+%spaces.} \als{Done, but it seems this section is focused too much on how rather
+%than what.} The goal therefore would be to recreate and improve this
+%implementation.
 
 One might argue that manually optimizing for performance is a thing of the past.
-While it is true that computer hardware has become much faster, there are still computationally intensive problems as well as a large portion of the world population that cannot afford the latest and greatest hardware.
-This could be motivated by financial reasons as well as a need for the hardware to be mobile (e.g. low-voltage processors in laptops).
+While
+%it is true that
+computer hardware has become much faster,
+%there are still computationally intensive problems as well as
+a large portion of the world population that cannot afford the latest and
+greatest hardware
+%. This could be motivated by financial reasons as well as
+and/or has a need for (less powerful) mobile hardware.
+%(e.g. low-voltage processors in laptops)
 
-Primary stakeholders would be scientists using this implementation either directly or indirectly, as well as programmers integrating this implementation into larger pieces of software.
+Primary stakeholders would be scientists using this implementation either
+directly or indirectly, as well as programmers integrating this implementation
+into larger pieces of software.
 
-The environment of the software is limited to what the OCaml compiler supports, but this includes Windows, macOS and Linux.
+The environment of the software is limited to what the OCaml compiler supports,
+but this includes Windows, macOS and Linux.
 
-\wss{Please format your tex file with 80 width lines of text, with a hard return at the
-  end of each line.}
+\wss{Please format your tex file with 80 width lines of text, with a hard
+return at the end of each line.}
+\als{Done, except for the URL.}
 
 \end{document}\grid
