@@ -226,7 +226,7 @@ constraints.
 \end{itemize}
 \item \famname{} Responsibilities:
 \begin{itemize}
-\item Generate (in a type-safe manner) a family member which calculates a 
+\item Generate (in a type-safe manner) a family member which contains a 
 spline that approximates the given ODE.
 \item 
 \end{itemize}
@@ -309,13 +309,14 @@ Symbol &$q_C$\\
 
 \subsection{Goal Statements}
 
-\noindent Given the \wss{inputs}, the goal statements are:
+\noindent Given the non-stiff continuous ODE, the goal statements are:
 
 \begin{itemize}
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] \wss{One
-    sentence description of the goal.  There may be more than one.  Each Goal
-    should have a meaningful label.}
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] Given 
+an interval and the desired number of knots, as well as an initial value, 
+calculate a spline and return a function that uses this spline to solve for 
+specific points on the provided interval.
 
 \end{itemize}
 
