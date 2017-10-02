@@ -222,7 +222,7 @@ constraints.
 \item User Responsibilities:
 \begin{itemize}
 \item Provide a non-stiff continuous ODE to \famname{} for which an accurate 
-solution can be obtained using RK4
+solution can be obtained using RK4 (see T\ref{T_RK4})
 \item Correctly process the resulting interpolated spline function
 \end{itemize}
 \item \famname{} Responsibilities:
@@ -280,35 +280,126 @@ models. The dimension of each quantity is also given.  \wss{Modify the examples
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{FluxCoil}\\
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{DD_ODE}\\
 \hline
-Label& \bf Heat flux out of coil\\
+Label& \bf Ordinary Differential Equation (ODE)\\
 \hline
-Symbol &$q_C$\\
+Symbol &${\bf f}$\\
 \hline
-% Units& $Mt^{-3}$\\
-% \hline
-  SI Units & \si{\watt\per\square\metre}\\
-  \hline
-  Equation&$q_C(t) = h_C (T_C - T_W(t))$, over area $A_C$\\
+ Units& $\mathbb{R} \times \mathbb{C}^n \rightarrow \mathbb{C}^n$\\
+ \hline
+%  SI Units & \si{\watt\per\square\metre}\\
+%  \hline
+  Equation&${\bf x'} = {\bf f} (t,{\bf x} (t))$\\
   \hline
   Description & 
-                $T_C$ is the temperature of the coil (\si{\celsius}).  $T_W$ is the temperature of the water (\si{\celsius}).  
-                The heat flux out of the coil, $q_C$ (\si{\watt\per\square\metre}), is found by
-                assuming that Newton's Law 
-                of Cooling applies (\aref{A_Newt_coil}).  This law (\dref{NL}) is used on the surface of
-                the coil, which has area $A_C$ (\si{\square\metre}) and heat 
-                transfer coefficient $h_C$
-                (\si{\watt\per\square\metre\per\celsius}).  This equation
-                assumes that the temperature of the coil is constant over time (\aref{A_tcoil}) and that it does not vary along the length
-                of the coil (\aref{A_tlcoil}).
+                 ${\bf f}$ is the equation for which we ultimately want to find 
+                 a numerical approximation.
   \\
   \hline
-  Sources&~\cite{Lightstone2012}  \\
+  Sources&~\cite{Corless???}  \\
   \hline
   Ref.\ By & \iref{ewat}\\
   \hline
 \end{tabular}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+    \renewcommand*{\arraystretch}{1.5}
+    \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+        \hline
+        \rowcolor[gray]{0.9}
+        Number& DD\refstepcounter{datadefnum}\thedatadefnum 
+        \label{DD_initialvalues}\\
+        \hline
+        Label& \bf Initial values\\
+        \hline
+        Symbol &$a, b$\\
+        \hline
+        Units& $\mathbb{R} \times \mathbb{R}$\\
+        \hline
+        %  SI Units & \si{\watt\per\square\metre}\\
+        %  \hline
+        Equation&\\
+        \hline
+        Description & 
+        The interval for which to solve the ODE (see \ddref{DD_ODE}). $a$ 
+        represents the beginning of the interval, $b$ the end.
+        \\
+        \hline
+        Sources&~\cite{Corless???}  \\
+        \hline
+        Ref.\ By & \iref{ewat}\\
+        \hline
+    \end{tabular}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+    \renewcommand*{\arraystretch}{1.5}
+    \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+        \hline
+        \rowcolor[gray]{0.9}
+        Number& DD\refstepcounter{datadefnum}\thedatadefnum 
+        \label{DD_interval}\\
+        \hline
+        Label& \bf Interval\\
+        \hline
+        Symbol & ${\bf x}_0$\\
+        \hline
+        Units& $\mathbb{C}^n$\\
+        \hline
+        %  SI Units & \si{\watt\per\square\metre}\\
+        %  \hline
+        Equation& ${\bf x}(t_0) = {\bf x}_0$\\
+        \hline
+        Description & 
+        Initial values for solving ODE (see \ddref{DD_ODE}).
+        \\
+        \hline
+        Sources&~\cite{Corless???}  \\
+        \hline
+        Ref.\ By & \iref{ewat}\\
+        \hline
+    \end{tabular}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+    \renewcommand*{\arraystretch}{1.5}
+    \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+        \hline
+        \rowcolor[gray]{0.9}
+        Number& DD\refstepcounter{datadefnum}\thedatadefnum 
+        \label{DD_stepsize}\\
+        \hline
+        Label& \bf Step size\\
+        \hline
+        Symbol & $h$ \\
+        \hline
+        Units& $\mathbb{R}$ \\
+        \hline
+        %  SI Units & \si{\watt\per\square\metre}\\
+        %  \hline
+        Equation& \\
+        \hline
+        Description & 
+        Size of the steps between the opints for which to find approximations 
+        using RK4 (\tref{T_RK4}).
+        \\
+        \hline
+        Sources&~\cite{Carette???}  \\
+        \hline
+        Ref.\ By & \iref{ewat}\\
+        \hline
+    \end{tabular}
 \end{minipage}\\
 
 \subsection{Goal Statements}
@@ -343,17 +434,16 @@ on.  \wss{Modify the examples below for your problem, and add additional models
   Label&\bf Initial value problem (IVP)\\
   \hline
   Equation&  ${\bf x'} = {\bf f} (t,{\bf x} (t))$, \quad ${\bf 
-  x}(t_0) = {\bf 
-  x}_0$ \quad
+  x}(t_0) = {\bf x}_0$ \quad
     where 
     \begin{itemize}
         \item ${\bf x} : \mathbb{R} \rightarrow \mathbb{C}^n$ is the 
     vector solution as a function of time
         \item ${\bf x}_0 \in 
-        \mathbb{C}^n$ is the initial condition
+        \mathbb{C}^n$ is the initial condition (see \ddref{DD_initialvalues})
         \item ${\bf f} : 
     \mathbb{R} \times \mathbb{C}^n \rightarrow \mathbb{C}^n$ is the function 
-    describing the vector field
+    describing the vector field (see \ddref{DD_ODE})
    \end{itemize} 
    Given an initial value ${\bf x}_0$, the goal is to find approximations on a 
    given interval $[t_a .. t_b]$.\\
@@ -435,7 +525,16 @@ on.  \wss{Modify the examples below for your problem, and add additional models
     should have a meaningful label.  Use cross-references to identify the
     appropriate traceability to T, GD, DD etc., using commands like dref, ddref 
     etc.}
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_asdf}:] 
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvaluesata}:] The 
+given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
+interval (\ddref{DD_interval}), represented by $a$.
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvalues}:] 
+Initial value vector size is expected to match the ones produced by the ODE 
+(\ddref{DD_ODE}).
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_interval}:] The 
+interval's bounds satisfy $a \leq b$.
 
 \end{itemize}
 
