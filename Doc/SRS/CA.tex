@@ -222,7 +222,7 @@ constraints.
 \item User Responsibilities:
 \begin{itemize}
 \item Provide a non-stiff continuous ODE to \famname{}
-\item Correctly process the resulting interpolated spline.
+\item Correctly process the resulting interpolated spline
 \end{itemize}
 \item \famname{} Responsibilities:
 \begin{itemize}
@@ -251,7 +251,7 @@ the system to the MetaOCaml extension of the OCaml programming language.
 \subsection{Background Overview} \label{Sec_Background}
 
 There are various numerical methods for approximating ordinary differential 
-equation (ODE), such as Euler's method, and the Runge-Kutta methods.
+equation (ODE), such as the Runge-Kutta methods (which include Euler's method).
 
 \subsection{Terminology and  Definitions}
 
@@ -374,6 +374,53 @@ on.  \wss{Modify the examples below for your problem, and add additional models
 \end{tabular}
 \end{minipage}\\
 
+\noindent
+\begin{minipage}{\textwidth}
+    \renewcommand*{\arraystretch}{1.5}
+    \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+        \hline
+        \rowcolor[gray]{0.9}
+        Number& T\refstepcounter{theorynum}\thetheorynum \label{T_COE}\\
+        \hline
+        Label&\bf Fourth order Runge-Kutta method (RK4)\\
+        \hline
+        Equation&  
+        \begin{itemize}
+            \item $t_1 = t_0 + h$
+            \item ${\bf k}_1 = {\bf f} (t_0, {\bf x}_0)$ slope at $x_0$
+            \item ${\bf k}_2 = {\bf f} (t_0 + \dfrac{h}{2}, {\bf x}_0 + 
+            \dfrac{h}{2} {\bf k}_1)$ slope of the point halfway between $t_0$ 
+            and $t_1$ when extrapolating slope ${\bf k}_1$ from point ${\bf 
+            x}_0$
+            \item ${\bf k}_3 = {\bf f} (t_0 + \dfrac{h}{2}, {\bf x}_0 + 
+            \dfrac{h}{2} {\bf k}_2)$ slope of the point halfway between $t_0$ 
+            and $t_1$ when extrapolating slope ${\bf k}_2$ from point ${\bf 
+            x}_0$
+            \item ${\bf k}_4 = {\bf f} (t_0 + h, {\bf x}_0 + 
+            h {\bf k}_3)$ slope of point at $t_1$ when extrapolating slope 
+            ${\bf k}_3$ from point ${\bf x}_0$
+            \item ${\bf x}_1 = {\bf x}_0 + \dfrac{h}{6} ( {\bf k}_1 + 2 {\bf 
+            k}_2 + 2 {\bf k}_3 + {\bf k}_4)$ new point created when 
+            extrapolating from point ${\bf x}_0$ using a weighted average of 
+            the previously calculated slopes
+            
+        \end{itemize}\\
+        \hline
+        Description & 
+        The above equations can be used to calculate (an approximation of) a 
+        new point given the previous or starting point.\\
+        \hline
+        Source &
+        Corless \& Fillion, A Graduate Introduction to Numerical Methods, p. 
+        618 \als{TODO: ref to bib}\\
+        % The above web link should be replaced with a proper citation to a 
+        %publication
+        \hline
+        Ref.\ By & \dref{ROCT}\\
+        \hline
+    \end{tabular}
+\end{minipage}\\
+
 ~\newline
 
 \section{Variabilities}
@@ -385,7 +432,9 @@ on.  \wss{Modify the examples below for your problem, and add additional models
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_meaningfulLabel}:]
   \wss{Short description of each assumption.  Each assumption
     should have a meaningful label.  Use cross-references to identify the
-    appropriate traceability to T, GD, DD etc., using commands like dref, ddref etc.}
+    appropriate traceability to T, GD, DD etc., using commands like dref, ddref 
+    etc.}
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_asdf}:] 
 
 \end{itemize}
 
