@@ -221,12 +221,13 @@ constraints.
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
-\item 
+\item Provide a non-stiff continuous ODE to \famname{}
+\item Correctly process the resulting interpolated spline.
 \end{itemize}
 \item \famname{} Responsibilities:
 \begin{itemize}
-\item Detect data type mismatch, such as a string of characters instead of a
-  floating point number
+\item Generate (in a type-safe manner) a family member which calculates a 
+spline that approximates the given ODE.
 \item 
 \end{itemize}
 \end{itemize}
@@ -242,7 +243,8 @@ These programmers therefore should have an understanding of undergraduate Level
 
 \subsection{Potential System Constraints}
 
-\wss{You may not have any system constraints}
+The responsibility of generating family members in a type-safe way restricts 
+the system to the MetaOCaml extension of the OCaml programming language.
 
 \section{Commonalities}
 
