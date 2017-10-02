@@ -221,8 +221,9 @@ constraints.
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
-\item Provide a non-stiff continuous ODE to \famname{}
-\item Correctly process the resulting interpolated spline
+\item Provide a non-stiff continuous ODE to \famname{} for which an accurate 
+solution can be obtained using RK4
+\item Correctly process the resulting interpolated spline function
 \end{itemize}
 \item \famname{} Responsibilities:
 \begin{itemize}
@@ -337,7 +338,7 @@ on.  \wss{Modify the examples below for your problem, and add additional models
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
   \hline
   \rowcolor[gray]{0.9}
-  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_COE}\\
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_IVP}\\
   \hline
   Label&\bf Initial value problem (IVP)\\
   \hline
@@ -380,7 +381,7 @@ on.  \wss{Modify the examples below for your problem, and add additional models
     \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
         \hline
         \rowcolor[gray]{0.9}
-        Number& T\refstepcounter{theorynum}\thetheorynum \label{T_COE}\\
+        Number& T\refstepcounter{theorynum}\thetheorynum \label{T_RK4}\\
         \hline
         Label&\bf Fourth order Runge-Kutta method (RK4)\\
         \hline
