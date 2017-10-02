@@ -250,6 +250,9 @@ the system to the MetaOCaml extension of the OCaml programming language.
 
 \subsection{Background Overview} \label{Sec_Background}
 
+There are various numerical methods for approximating ordinary differential 
+equation (ODE), such as Euler's method, and the Runge-Kutta methods.
+
 \subsection{Terminology and  Definitions}
 
 This subsection provides a list of terms that are used in the subsequent
@@ -336,23 +339,34 @@ on.  \wss{Modify the examples below for your problem, and add additional models
   \rowcolor[gray]{0.9}
   Number& T\refstepcounter{theorynum}\thetheorynum \label{T_COE}\\
   \hline
-  Label&\bf Conservation of thermal energy\\
+  Label&\bf Initial value problem (IVP)\\
   \hline
-  Equation&  $-{\bf \nabla \cdot q} + g$ = $\rho C \frac{\partial T}{\partial t}$\\
+  Equation&  ${\bf x'} = {\bf f} (t,{\bf x} (t))$, \quad ${\bf 
+  x}(t_0) = {\bf 
+  x}_0$ \quad
+    where 
+    \begin{itemize}
+        \item ${\bf x} : \mathbb{R} \rightarrow \mathbb{C}^n$ is the 
+    vector solution as a function of time
+        \item ${\bf x}_0 \in 
+        \mathbb{C}^n$ is the initial condition
+        \item ${\bf f} : 
+    \mathbb{R} \times \mathbb{C}^n \rightarrow \mathbb{C}^n$ is the function 
+    describing the vector field
+   \end{itemize} 
+   Given an initial value ${\bf x}_0$, the goal is to find approximations on a 
+   given interval $[t_a .. t_b]$.\\
   \hline
   Description & 
-                The above equation gives the conservation of energy for transient heat transfer in a material
-                of specific heat capacity $C$ (\si{\joule\per\kilogram\per\celsius}) and density $\rho$ 
-                (\si{\kilogram\per\cubic\metre}), where $\bf q$ is the thermal flux vector (\si{\watt\per\square\metre}),
-                $g$ is the volumetric heat generation
-                (\si{\watt\per\cubic\metre}), $T$ is the temperature
-                (\si{\celsius}),  $t$ is time (\si{\second}), and $\nabla$ is
-                the gradient operator.  For this equation to apply, other forms
-                of energy, such as mechanical energy, are assumed to be negligible in the
-                system (\aref{A_OnlyThermalEnergy}).  In general, the material properties ($\rho$ and $C$) depend on temperature.\\
+                The standard form of an initial value problem is given above. 
+                The issue is that many IVPs are difficult to solve manually (or 
+                programmatically) and the correct solutions are often unknown. 
+                Numerical methods are close enough to be used in most 
+                applications.\\
   \hline
   Source &
-           \url{http://www.efunda.com/formulae/heat_transfer/conduction/overview_cond.cfm}\\
+           Corless \& Fillion, A Graduate Introduction to Numerical Methods, p. 
+           510,513 \als{TODO: ref to bib}\\
   % The above web link should be replaced with a proper citation to a publication
   \hline
   Ref.\ By & \dref{ROCT}\\
