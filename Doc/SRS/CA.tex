@@ -179,13 +179,25 @@ understand what rkf45.ml does. The goals and theoretical models used in the
 rkf45.ml implementations are provided, as are assumptions and unambiguous 
 definitions.
 
-\subsection{Scope of the Family} 
+\subsection{Scope of the Family}
+
+The responsibility of the family is solving the provided ODEs for given 
+intervals, initial values and step sizes. The user will have to ensure the RK4 
+method is best for their particular problem(s), and they will have to ensure 
+appropriate input is provided (see \ref{ssec:Assumptions} for some starting 
+points). Additionally, the user will also have to process the output 
+appropriately.
 
 \subsection{Characteristics of Intended Reader} 
-The reader is expected to have some undergraduate STEM background. Ideally, 
-they have been exposed to some calculus and programming courses.
+The reader is expected to have some undergraduate STEM and functional 
+programming background. Ideally, they have been exposed to some calculus and 
+programming courses.
 
 \subsection{Organization of Document}
+
+The organization of this document follows the template for a commonality 
+analysis (CA) provided by Dr. W. S. Smith, which is in turn based on the SRS 
+template proposed in \als{TODO:cites, document structure}
 
 \section{General System Description}
 
@@ -496,7 +508,7 @@ on.  \wss{Modify the examples below for your problem, and add additional models
 
 \section{Variabilities}
 
-\subsection{Assumptions}
+\subsection{Assumptions}\label{ssec:Assumptions}
 
 \begin{itemize}
 
