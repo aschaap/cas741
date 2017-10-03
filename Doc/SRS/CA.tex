@@ -72,14 +72,14 @@
 \newcommand{\lthelcnum}{LC\thelcnum}
 \newcommand{\lcref}[1]{LC\ref{#1}}
 
-\newcommand{\famname}{FamName} % PUT YOUR PROGRAM NAME HERE
+\newcommand{\famname}{rkf45.ml} % PUT YOUR PROGRAM NAME HERE
 
 \usepackage{fullpage}
 
 \begin{document}
 
-\title{Program Family Title} 
-\author{Author Name}
+\title{RKF45 Generator} 
+\author{Alexander Schaap}
 \date{\today}
 
 \maketitle
@@ -93,8 +93,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+\today & 1.0 & Initial version\\
 \bottomrule
 \end{tabularx}
 
@@ -148,7 +147,7 @@ which heat is transferred in
   PS & Physical System Description\\
   R & Requirement\\
   SRS & Software Requirements Specification\\
-  \famname{} & \wss{put your famram name here}\\
+  \famname{} & Family of programs based on the RK4 / RKF45 method(s)\\
   T & Theoretical Model\\
   \bottomrule
 \end{tabular}\\
@@ -165,16 +164,20 @@ which heat is transferred in
 
 \section{Introduction}
 
-\wss{This CA template is based on \citet{Smith2006}.  It
-  will get you started, but you will have to make changes.  Any changes to
-  section headings should be approved by the instructor, since that implies a
-  deviation from the template.  Although the bits shown below do not include
-  type information, you may need to add this information for your problem.}
-
-\wss{Feel free to change the appearance of the report by modifying the \LaTeX
-  commands.}
+This document provides an overview of the commonality analysis (CA) for the 
+rkf45.ml program family. This program family calculates approximations in the 
+form of splines to given ordinary differential equations (ODEs) using a 
+fourth-order Runge-Kutta / Runge-Kutta-Fehlberg method. It does most of this at 
+compile-time, generating a different family member for each given combination 
+of ODE, interval, step size, and initial values. The current section describes 
+the purpose of this document, the scope of this family, the organization of the 
+remainder of the document and the characteristics of the intended reader.
 
 \subsection{Purpose of Document}
+The main purpose of this document is to provide sufficient information to 
+understand what rkf45.ml does. The goals and theoretical models used in the 
+rkf45.ml implementations are provided, as are assumptions and unambiguous 
+definitions.
 
 \subsection{Scope of the Family} 
 
