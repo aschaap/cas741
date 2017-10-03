@@ -448,8 +448,7 @@ on.  \wss{Modify the examples below for your problem, and add additional models
                 applications.\\
   \hline
   Source &
-           Corless \& Fillion, A Graduate Introduction to Numerical Methods, p. 
-           510,513 \als{TODO: ref to bib}\\
+           \cite{corless_graduate_2013} p. 510, 513\\
   % The above web link should be replaced with a proper citation to a publication
   \hline
   Ref.\ By & \dref{ROCT}\\
@@ -457,13 +456,16 @@ on.  \wss{Modify the examples below for your problem, and add additional models
 \end{tabular}
 \end{minipage}\\
 
+
+\section{Variabilities}
+
 \noindent
 \begin{minipage}{\textwidth}
     \renewcommand*{\arraystretch}{1.5}
     \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
         \hline
         \rowcolor[gray]{0.9}
-        Number& T\refstepcounter{theorynum}\thetheorynum \label{T_RK4}\\
+        Number& IM\refstepcounter{instnum}\theinstnum \label{T_RK4}\\
         \hline
         Label&\bf Fourth order Runge-Kutta method (RK4)\\
         \hline
@@ -474,16 +476,16 @@ on.  \wss{Modify the examples below for your problem, and add additional models
             \item ${\bf k}_2 = {\bf f} (t_0 + \dfrac{h}{2}, {\bf x}_0 + 
             \dfrac{h}{2} {\bf k}_1)$ slope of the point halfway between $t_0$ 
             and $t_1$ when extrapolating slope ${\bf k}_1$ from point ${\bf 
-            x}_0$
+                x}_0$
             \item ${\bf k}_3 = {\bf f} (t_0 + \dfrac{h}{2}, {\bf x}_0 + 
             \dfrac{h}{2} {\bf k}_2)$ slope of the point halfway between $t_0$ 
             and $t_1$ when extrapolating slope ${\bf k}_2$ from point ${\bf 
-            x}_0$
+                x}_0$
             \item ${\bf k}_4 = {\bf f} (t_0 + h, {\bf x}_0 + 
             h {\bf k}_3)$ slope of point at $t_1$ when extrapolating slope 
             ${\bf k}_3$ from point ${\bf x}_0$
             \item ${\bf x}_1 = {\bf x}_0 + \dfrac{h}{6} ( {\bf k}_1 + 2 {\bf 
-            k}_2 + 2 {\bf k}_3 + {\bf k}_4)$ new point created when 
+                k}_2 + 2 {\bf k}_3 + {\bf k}_4)$ new point created when 
             extrapolating from point ${\bf x}_0$ using a weighted average of 
             the previously calculated slopes
             
@@ -494,8 +496,7 @@ on.  \wss{Modify the examples below for your problem, and add additional models
         new point given the previous or starting point.\\
         \hline
         Source &
-        Corless \& Fillion, A Graduate Introduction to Numerical Methods, p. 
-        618 \als{TODO: ref to bib}\\
+        \cite{corless_graduate_2013} p. 618\\
         % The above web link should be replaced with a proper citation to a 
         %publication
         \hline
@@ -505,8 +506,38 @@ on.  \wss{Modify the examples below for your problem, and add additional models
 \end{minipage}\\
 
 ~\newline
+\noindent
+\begin{minipage}{\textwidth}
+    \renewcommand*{\arraystretch}{1.5}
+    \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+        \hline
+        \rowcolor[gray]{0.9}
+        Number & IM\refstepcounter{instnum}\theinstnum \label{IM_RK2}\\
+        \hline
+        Label &\bf Second-order Runge-Kutta method (Improved Euler method)\\
+        \hline
+        Equations &  
+        \begin{itemize}
+            \item ${\bf Y}_1 = {\bf x}_k + h {\bf f} (t_k + {\bf x}_k)$
+            \item ${\bf x}_{k+1} = {\bf x}_k + h \Big( \dfrac{1}{2} {\bf f} 
+            (t_k,{\bf x}_k) + \dfrac{1}{2} {\bf f} (t_{k+1}, {\bf Y}_1) \Big)$
+        \end{itemize}\\
+        \hline
+        Description & 
+        The above equations can be used to calculate (an approximation of) a 
+        new point given the previous or starting point.\\
+        \hline
+        Source &
+        \cite{corless_graduate_2013} p. 616 \\
+        % The above web link should be replaced with a proper citation to a 
+        %publication
+        \hline
+        Ref.\ By & \dref{ROCT}\\
+        \hline
+    \end{tabular}
+\end{minipage}\\
 
-\section{Variabilities}
+~\newline
 
 \subsection{Assumptions}\label{ssec:Assumptions}
 
@@ -541,18 +572,20 @@ interval's bounds satisfy $a \leq b$.
 \newpage
 
 \bibliographystyle {plainnat}
-\bibliography {../../ReferenceMaterial/References}
+\bibliography {../References,../ReferencesA}
 
-\newpage
-
-\section{Appendix}
-
-\wss{Your report may require an appendix.  For instance, this is a good point to
-show the values of the symbolic parameters introduced in the report.}
-
-\subsection{Symbolic Parameters}
-
-\wss{The definition of the requirements will likely call for SYMBOLIC\_CONSTANTS.
-Their values are defined in this section for easy maintenance.}
+%\newpage
+%
+%\section{Appendix}
+%
+%\wss{Your report may require an appendix.  For instance, this is a good point 
+%to
+%show the values of the symbolic parameters introduced in the report.}
+%
+%\subsection{Symbolic Parameters}
+%
+%\wss{The definition of the requirements will likely call for 
+%SYMBOLIC\_CONSTANTS.
+%Their values are defined in this section for easy maintenance.}
 
 \end{document}
