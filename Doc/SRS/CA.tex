@@ -146,8 +146,13 @@ which heat is transferred in
   GS & Goal Statement\\
   IM & Instance Model\\
   LC & Likely Change\\
+  ODE & Ordinary Differential Equation\\
   PS & Physical System Description\\
   R & Requirement\\
+  RK & Runge-Kutta\\
+  RK2 & Second order Runge-Kutta method\\
+  RK4 & Fourth order Runge-Kutta method\\
+%  RKF45 & Runge-Kutta-Fehlberg method\\
   SRS & Software Requirements Specification\\
   \famname{} & Family of programs based on the RK4 / RKF45 method(s)\\
   T & Theoretical Model\\
@@ -222,13 +227,16 @@ constraints.
 \autoref{fig:systemcontext} shows the system context. A circle represents than 
 external entity outside the software, which is the ``user'', or parent program 
 making use of the generator as a library. A rectangle is used to represent the 
-generator as well as the \famname{} family members it can generate. Ideally, 
+generator as well as the \famname{} family members it can generate. 
+
+Ideally, 
 the parent program knows the ODE(s) and other inputs at compile time, and
-uses each generated family member many times to maximize the benefit of 
-code generation. This is especially desirable if the ODE(s) or other inputs are 
-no known at compile time; code generation can still happen at run-time, but 
-ideally the parent program can offset the incurred cost of this on-the-fly 
-generation.
+uses each generated family member many times at run-time to maximize the 
+benefit of code generation. 
+Alternatively, the ODE(s) or other inputs are 
+not known at compile time; code generation can still happen at run-time, but 
+hopefully the parent program can offset the incurred cost of this on-the-fly 
+generation by running the optimized generated code enough times.
 
 \begin{figure}[ht]
     \centering
@@ -253,10 +261,11 @@ generation.
 \caption{System Context}
 \label{fig:systemcontext}
 \end{figure}
+
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
-    \item Provide appropriate input to the system
+\item Provide appropriate input to the system
 \item Ensure assumptions on the input are met (see \autoref{ssec:Assumptions})
 \item Correctly process the resulting output
 \end{itemize}
@@ -269,12 +278,13 @@ generation.
 \subsection{Potential User Characteristics} \label{SecUserCharacteristics}
 
 The most common user of \famname{} will be other programs. However, one or more 
-programmers are needed to write the code that calls the function(s) provided by 
+programmers are needed to write the code that calls the functions provided by 
 this family.
-
-These programmers therefore should have an understanding of undergraduate Level
-1 Calculus.
-
+These programmers therefore should have an understanding of undergraduate 
+calculus and OCaml programming. (Knowledge of MetaOCaml should not be necessary 
+if the program family is able to hide its usage thereof sufficiently).
+                                                                                
+                          
 \subsection{Potential System Constraints}
 
 The responsibility of generating family members in a type-safe way restricts 
@@ -282,10 +292,17 @@ the system to the MetaOCaml extension of the OCaml programming language.
 
 \section{Commonalities}
 
+This section contains the commonalities between the \famname{} family members. 
+This section starts with succinct background information about the problem, 
+followed by terminology and definitions, data definitions, goal statements and 
+ending with theoretical models. 
+
 \subsection{Background Overview} \label{Sec_Background}
 
 There are various numerical methods for approximating ordinary differential 
-equation (ODE), such as the Runge-Kutta methods (which include Euler's method).
+equation (ODE) given initial values. This problem is called an initial value 
+problem (IVP, see T\tref{T_IVP}). A well-known way to solve these problems is 
+through Runge-Kutta methods.% (which include Euler's method).
 
 \subsection{Terminology and  Definitions}
 
@@ -295,16 +312,55 @@ easier to correctly understand the requirements:
 
 \begin{itemize}
 
-\item 
+\item Ordinary differential equation (ODE): an equation that involves some 
+ordinary (rather than partial) derivatives of a function. The goal is to find 
+the function that satisfies the equation, and this is not always easily 
+achievable through integration. (See D\dref{DD_ODE}.)
+
+\item Continuous function: a function that evaluates to a value that is not 
+infinity or undefined for any input.
+
+\item Stiff ODE: an ODE for which certain numerical methods are numerically 
+unstable unless the step size is extremely small. There is no exact definition.
+
+\item Initial values (initial condition): a starting point from which the rest 
+of the approximation 
+can be calculated. (See D\dref{DD_initialvalues}.)
+
+\item Interval: interval inside which the ODE needs to be approximated. (See 
+\dref{DD_interval}.)
+
+\item Step size: the distance between the points that need to be calculated 
+using an RK method, for example. 
+
+\item Initial value problem (IVP): an ODE along with initial values for which a 
+numerical approximation must be found.
+
+\item Runge-Kutta methods: a set of methods that approximate ODEs in IVPs for a 
+given interval and step size.
+
+\item Compile-time: the time during which a program is compiled.
+
+\item Run-time: the time during which a program is run.
+
+\item Metaprogramming: programming software that takes in and/or produces 
+programs.
+
+\item Code generation: producing code programmatically.
+
+\item Multi-stage programming (MSP): a form of metaprogramming where the 
+execution of specific code fragments is delayed; these fragments are then 
+combined into larger fragments and ultimately executed.
+
+\item MetaOCaml: an extension to the OCaml programming language which adds 
+staging annotations that enable MSP.
 
 \end{itemize}
 
 \subsection{Data Definitions} \label{sec_datadef}
 
 This section collects and defines all the data needed to build the instance
-models. The dimension of each quantity is also given.  \wss{Modify the examples
-  below for your problem, and add additional definitions as appropriate.}
-
+models. The dimension of each quantity is also given.
 ~\newline
 
 \noindent
@@ -319,20 +375,22 @@ Label& \bf Ordinary Differential Equation (ODE)\\
 \hline
 Symbol &${\bf f}$\\
 \hline
- Units& $\mathbb{R} \times \mathbb{C}^n \rightarrow \mathbb{C}^n$\\
+ Units& N/A\\
  \hline
 %  SI Units & \si{\watt\per\square\metre}\\
 %  \hline
   Equation&${\bf x'} = {\bf f} (t,{\bf x} (t))$\\
   \hline
   Description & 
-                 ${\bf f}$ is the equation for which we ultimately want to find 
+                 ${\bf f} : \mathbb{R} \times \mathbb{C}^n \rightarrow 
+                 \mathbb{C}^n$ is the equation for which we ultimately want to 
+                 find 
                  a numerical approximation.
   \\
   \hline
-  Sources&~\cite{Corless???}  \\
+  Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{ewat}\\
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -352,20 +410,21 @@ Symbol &${\bf f}$\\
         \hline
         Symbol &$a, b$\\
         \hline
-        Units& $\mathbb{R} \times \mathbb{R}$\\
+        Units& N/A\\
         \hline
         %  SI Units & \si{\watt\per\square\metre}\\
         %  \hline
         Equation&\\
         \hline
         Description & 
-        The interval for which to solve the ODE (see \ddref{DD_ODE}). $a$ 
+        $[a,b] : \mathbb{R} \times \mathbb{R}$ is the interval for which to 
+        solve the ODE (see \ddref{DD_ODE}). $a$ 
         represents the beginning of the interval, $b$ the end.
         \\
         \hline
-        Sources&~\cite{Corless???}  \\
-        \hline
-        Ref.\ By & \iref{ewat}\\
+  Sources & \cite{corless_graduate_2013} \\
+  \hline
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -385,19 +444,20 @@ Symbol &${\bf f}$\\
         \hline
         Symbol & ${\bf x}_0$\\
         \hline
-        Units& $\mathbb{C}^n$\\
+        Units& N/A\\
         \hline
         %  SI Units & \si{\watt\per\square\metre}\\
         %  \hline
         Equation& ${\bf x}(t_0) = {\bf x}_0$\\
         \hline
         Description & 
-        Initial values for solving ODE (see \ddref{DD_ODE}).
+        ${\bf x} : \mathbb{C}^n$ are initial values for solving ODE (see 
+        \ddref{DD_ODE}).
         \\
         \hline
-        Sources&~\cite{Corless???}  \\
-        \hline
-        Ref.\ By & \iref{ewat}\\
+  Sources & \cite{corless_graduate_2013} \\
+  \hline
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -417,20 +477,21 @@ Symbol &${\bf f}$\\
         \hline
         Symbol & $h$ \\
         \hline
-        Units& $\mathbb{R}$ \\
+        Units& N/A \\
         \hline
         %  SI Units & \si{\watt\per\square\metre}\\
         %  \hline
-        Equation& \\
+        Equation& N/A\\
         \hline
         Description & 
-        Size of the steps between the opints for which to find approximations 
-        using RK4 (\tref{T_RK4}).
+        $h : \mathbb{R}$ is the size of the steps between the points for which 
+        to find approximations 
+        using RK methods (as described in \iref{T_RK4} and \iref{IM_RK2}).
         \\
         \hline
-        Sources&~\cite{Carette???}  \\
-        \hline
-        Ref.\ By & \iref{ewat}\\
+  Sources & \cite{corless_graduate_2013} \\
+  \hline
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -442,20 +503,17 @@ Symbol &${\bf f}$\\
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] Given 
-a desired RK method, an interval and the desired number of knots, as well as an 
-initial value, 
-calculate a spline and return a function that uses this spline to solve for 
-specific points on the provided interval.
-\item Generate (in a type-safe manner) a family member which contains a 
-spline that approximates the given ODE.
+an RK method specification, an interval and the desired step size, as well as 
+an initial value, calculate a spline and generate (in a type-safe manner) a 
+function that uses this spline to solve for specific points within the provided 
+interval.
 
 \end{itemize}
 
 \subsection{Theoretical Models} \label{sec_theoretical}
 
 This section focuses on the general equations and laws that \famname{} is based
-on.  \wss{Modify the examples below for your problem, and add additional models
-  as appropriate.}
+on.
 
 ~\newline
 
@@ -502,7 +560,7 @@ on.  \wss{Modify the examples below for your problem, and add additional models
 
 
 \section{Variabilities}
-
+\subsection{Instance Models}
 \noindent
 \begin{minipage}{\textwidth}
     \renewcommand*{\arraystretch}{1.5}
