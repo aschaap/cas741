@@ -123,10 +123,32 @@ systems.  The symbols are listed in alphabetical order.
 \noindent \begin{longtable*}{l l p{12cm}} \toprule
 \textbf{symbol} & \textbf{unit} & \textbf{description}\\
 \midrule 
-$A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
+${\bf f}$ & N/A & ODE for which to solve
 \\
-$A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-which heat is transferred in
+$h$ & N/A & step size
+\\ 
+$t$ & N/A & an independent variable, perhaps easy to think of as time
+\\ 
+$t_0$ & N/A & beginning of interval
+\\ 
+$t_N$ & N/A & end of interval
+\\ 
+$t_k$ & N/A & any $t$ on the interval $[t_0..t_N]$
+\\ 
+${\bf x(t)}$ & N/A & a function of $t$
+\\ 
+${\bf x}'$ & N/A & derivative of ${\bf x(t)}$
+\\ 
+${\bf x}_0$ & N/A & initial values for ${\bf f}$
+\\ 
+${\bf x}_k$ & N/A & (numerical approximation of) a point on the solution for 
+${\bf f}$
+\\ 
+$\mathbb{R}$ & N/A & Real numbers
+\\ 
+$\mathbb{C}$ & N/A & Complex numbers
+\\ 
+$k_{1..4}, {\bf Y}_1$ & N/A & intermediate variables in the RK methods
 \\ 
 \bottomrule
 \end{longtable*}
@@ -153,8 +175,9 @@ which heat is transferred in
   RK2 & Second order Runge-Kutta method\\
   RK4 & Fourth order Runge-Kutta method\\
 %  RKF45 & Runge-Kutta-Fehlberg method\\
+  \famname{} & Family of programs based on the RK2 / RK4 method(s)\\
   SRS & Software Requirements Specification\\
-  \famname{} & Family of programs based on the RK4 / RKF45 method(s)\\
+  STEM & Science, Technology, Engineering \& Mathematics\\
   T & Theoretical Model\\
   \bottomrule
 \end{tabular}\\
@@ -301,7 +324,7 @@ ending with theoretical models.
 
 There are various numerical methods for approximating ordinary differential 
 equation (ODE) given initial values. This problem is called an initial value 
-problem (IVP, see T\tref{T_IVP}). A well-known way to solve these problems is 
+problem (IVP, see \tref{T_IVP}). A well-known way to solve these problems is 
 through Runge-Kutta methods.% (which include Euler's method).
 
 \subsection{Terminology and  Definitions}
@@ -315,7 +338,7 @@ easier to correctly understand the requirements:
 \item Ordinary differential equation (ODE): an equation that involves some 
 ordinary (rather than partial) derivatives of a function. The goal is to find 
 the function that satisfies the equation, and this is not always easily 
-achievable through integration. (See D\dref{DD_ODE}.)
+achievable through integration. (See \ddref{DD_ODE}.)
 
 \item Continuous function: a function that evaluates to a value that is not 
 infinity or undefined for any input.
@@ -325,10 +348,10 @@ unstable unless the step size is extremely small. There is no exact definition.
 
 \item Initial values (initial condition): a starting point from which the rest 
 of the approximation 
-can be calculated. (See D\dref{DD_initialvalues}.)
+can be calculated. (See \ddref{DD_initialvalues}.)
 
 \item Interval: interval inside which the ODE needs to be approximated. (See 
-\dref{DD_interval}.)
+\ddref{DD_interval}.)
 
 \item Step size: the distance between the points that need to be calculated 
 using an RK method, for example. 
@@ -351,6 +374,9 @@ programs.
 \item Multi-stage programming (MSP): a form of metaprogramming where the 
 execution of specific code fragments is delayed; these fragments are then 
 combined into larger fragments and ultimately executed.
+
+\item OCaml: A multi-paradigm programming language (imperative \& functional) 
+with a syntax that will appear somewhat unusual to most.
 
 \item MetaOCaml: an extension to the OCaml programming language which adds 
 staging annotations that enable MSP.
@@ -404,11 +430,11 @@ Symbol &${\bf f}$\\
         \hline
         \rowcolor[gray]{0.9}
         Number& DD\refstepcounter{datadefnum}\thedatadefnum 
-        \label{DD_initialvalues}\\
+        \label{DD_interval}\\
         \hline
-        Label& \bf Initial values\\
+        Label& \bf Interval\\
         \hline
-        Symbol &$a, b$\\
+        Symbol &$t_0, t_N$\\
         \hline
         Units& N/A\\
         \hline
@@ -417,9 +443,9 @@ Symbol &${\bf f}$\\
         Equation&\\
         \hline
         Description & 
-        $[a,b] : \mathbb{R} \times \mathbb{R}$ is the interval for which to 
-        solve the ODE (see \ddref{DD_ODE}). $a$ 
-        represents the beginning of the interval, $b$ the end.
+        $[t_0,t_N] : \mathbb{R} \times \mathbb{R}$ is the interval for which to 
+        solve the ODE (see \ddref{DD_ODE}). $t_0$ 
+        represents the beginning of the interval, $t_N$ the end.
         \\
         \hline
   Sources & \cite{corless_graduate_2013} \\
@@ -438,9 +464,9 @@ Symbol &${\bf f}$\\
         \hline
         \rowcolor[gray]{0.9}
         Number& DD\refstepcounter{datadefnum}\thedatadefnum 
-        \label{DD_interval}\\
+        \label{DD_initialvalues}\\
         \hline
-        Label& \bf Interval\\
+        Label& \bf Initial values\\
         \hline
         Symbol & ${\bf x}_0$\\
         \hline
@@ -451,7 +477,7 @@ Symbol &${\bf f}$\\
         Equation& ${\bf x}(t_0) = {\bf x}_0$\\
         \hline
         Description & 
-        ${\bf x} : \mathbb{C}^n$ are initial values for solving ODE (see 
+        ${\bf x}_0 : \mathbb{C}^n$ are initial values for solving ODE (see 
         \ddref{DD_ODE}).
         \\
         \hline
@@ -481,7 +507,7 @@ Symbol &${\bf f}$\\
         \hline
         %  SI Units & \si{\watt\per\square\metre}\\
         %  \hline
-        Equation& N/A\\
+        Equation& $t_{k+1} - t_k = h$\\
         \hline
         Description & 
         $h : \mathbb{R}$ is the size of the steps between the points for which 
@@ -540,7 +566,7 @@ on.
     describing the vector field (see \ddref{DD_ODE})
    \end{itemize} 
    Given an initial value ${\bf x}_0$, the goal is to find approximations on a 
-   given interval $[t_a .. t_b]$.\\
+   given interval $[t_0 .. t_N]$.\\
   \hline
   Description & 
                 The standard form of an initial value problem is given above. 
@@ -585,7 +611,7 @@ non-stiff (otherwise the user accepts that the results will be inaccurate)
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvaluesata}:] The 
 given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
-interval (\ddref{DD_interval}), represented by $a$.
+interval (\ddref{DD_interval}), represented by $t_0$.
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvalues}:] 
 Initial value (\ddref{DD_initialvalues}) vector size is expected to match the 
@@ -593,7 +619,7 @@ ones produced by the ODE
 (\ddref{DD_ODE}).
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_interval}:] The 
-interval's bounds (\ddref{DD_interval}) satisfy $a < b$.
+interval's bounds (\ddref{DD_interval}) satisfy $t_0 < t_N$.
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_stepsize}:] The step 
 size (\ddref{DD_stepsize}) shall be a positive real number.
@@ -664,7 +690,7 @@ its members.
         \hline
         Equations &  
         \begin{itemize}
-            \item ${\bf Y}_1 = {\bf x}_k + h {\bf f} (t_k + {\bf x}_k)$ %new 
+            \item ${\bf Y}_1 = {\bf x}_k + h {\bf f} (t_k, {\bf x}_k)$ %new 
             %intermediate point at x_{k+1} by extrapolating slope at x_k
             \item ${\bf x}_{k+1} = {\bf x}_k + h \Big( \dfrac{1}{2} {\bf f} 
             (t_k,{\bf x}_k) + \dfrac{1}{2} {\bf f} (t_{k+1}, {\bf Y}_1) \Big)$ 
