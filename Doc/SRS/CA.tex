@@ -75,6 +75,8 @@
 \newcommand{\famname}{rkf45.ml} % PUT YOUR PROGRAM NAME HERE
 
 \usepackage{fullpage}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
 
 \begin{document}
 
@@ -163,30 +165,36 @@ which heat is transferred in
 \pagenumbering{arabic}
 
 \section{Introduction}
-
+%modelled after 3dfim+
 This document provides an overview of the commonality analysis (CA) for the 
-rkf45.ml program family. This program family calculates approximations in the 
-form of splines to given ordinary differential equations (ODEs) using a 
-fourth-order Runge-Kutta / Runge-Kutta-Fehlberg method. It does most of this at 
-compile-time, generating a different family member for each given combination 
-of ODE, interval, step size, and initial values. The current section describes 
-the purpose of this document, the scope of this family, the organization of the 
-remainder of the document and the characteristics of the intended reader.
+\famname{} program family. Members of program family are produced by a code 
+generator. Generated members provide numerical approximations for given 
+ordinary differential equations (ODEs) using Runge-Kutta (RK) methods. Most of 
+the calculations happens during code generation, producing a different family 
+member for each given combination of RK method, ODE, interval, step size, and 
+initial values. 
+%The family member presents the results in the form of a function that can be 
+%called. 
+The current section describes the purpose of this document, the scope of this 
+family, the organization of the remainder of the document and the 
+characteristics of the intended reader.
 
 \subsection{Purpose of Document}
+%modelled after 3dfim+
 The main purpose of this document is to provide sufficient information to 
-understand what rkf45.ml does. The goals and theoretical models used in the 
-rkf45.ml implementations are provided, as are assumptions and unambiguous 
+understand what \famname{} is expected to do. The goals and theoretical models 
+used in the 
+\famname{} generator are provided, as are assumptions and unambiguous 
 definitions.
 
 \subsection{Scope of the Family}
-
+%loosely modelled after 3dfim+
 The responsibility of the family is solving the provided ODEs for given 
-intervals, initial values and step sizes. The user will have to ensure the RK4 
-method is best for their particular problem(s), and they will have to ensure 
-appropriate input is provided (see \ref{ssec:Assumptions} for some starting 
-points). Additionally, the user will also have to process the output 
-appropriately.
+intervals, initial values and step sizes using the specified RK method. The 
+user will have to ensure the RK method specified is appropriate for their 
+particular problem(s), and they will have to ensure appropriate and correct 
+input is provided (see \ref{ssec:Assumptions} for some starting points). 
+Additionally, the user will also have to process the output appropriately.
 
 \subsection{Characteristics of Intended Reader} 
 The reader is expected to have some undergraduate STEM and functional 
@@ -194,10 +202,14 @@ programming background. Ideally, they have been exposed to some calculus and
 programming courses.
 
 \subsection{Organization of Document}
-
+%inspired by FamilyOfMaterialModels
 The organization of this document follows the template for a commonality 
-analysis (CA) provided by Dr. W. S. Smith, which is in turn based on the SRS 
-template proposed in \als{TODO:cites, document structure}
+analysis (CA) provided by Dr. W. S. Smith, which is in turn adapted from 
+\cite{Lai2004},\cite{SmithAndLai2005}, \cite{Smith2006} and 
+\cite{SmithEtAl2007}.
+
+The structure of this document is essentially top-down, with detail added as 
+one proceeds through it.
 
 \section{General System Description}
 
@@ -207,21 +219,50 @@ constraints.
 
 \subsection{Potential System Contexts}
 
-\wss{Your system context will likely include an explicit list of user and system
-  responsibilities}
+\autoref{fig:systemcontext} shows the system context. A circle represents than 
+external entity outside the software, which is the ``user'', or parent program 
+making use of the generator as a library. A rectangle is used to represent the 
+generator as well as the \famname{} family members it can generate. Ideally, 
+the parent program knows the ODE(s) and other inputs at compile time, and
+uses each generated family member many times to maximize the benefit of 
+code generation. This is especially desirable if the ODE(s) or other inputs are 
+no known at compile time; code generation can still happen at run-time, but 
+ideally the parent program can offset the incurred cost of this on-the-fly 
+generation.
 
+\begin{figure}[ht]
+    \centering
+\begin{tikzpicture} [
+    auto,
+    c/.style = {circle, draw, text centered},
+    b/.style = {rectangle, draw, text centered, rounded corners, minimum 
+    height=2em},
+    arrow/.style = {draw, ->},
+    node distance = 5cm
+    ]
+    \node[c](user) {Parent program};
+    \node[b, right of=user](RKgen) {\famname{} Generator}; 
+    \node[b, below of=RKgen](gen) {Generated code};
+    
+    \draw[arrow] (user) -- node {Inputs} (RKgen);
+    \draw[arrow] (RKgen) -- node {Produces} (gen);
+    \draw[arrow] (user) -- node {Calls} (gen);
+    \draw[arrow] (gen) -| node {Results} (user);
+    
+\end{tikzpicture}
+\caption{System Context}
+\label{fig:systemcontext}
+\end{figure}
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
-\item Provide a non-stiff continuous ODE to \famname{} for which an accurate 
-solution can be obtained using RK4 (see T\ref{T_RK4})
-\item Correctly process the resulting interpolated spline function
+    \item Provide appropriate input to the system
+\item Ensure assumptions on the input are met (see \autoref{ssec:Assumptions})
+\item Correctly process the resulting output
 \end{itemize}
 \item \famname{} Responsibilities:
 \begin{itemize}
-\item Generate (in a type-safe manner) a family member which contains a 
-spline that approximates the given ODE.
-\item 
+\item Calculate the correct output for the given input
 \end{itemize}
 \end{itemize}
 
@@ -401,9 +442,12 @@ Symbol &${\bf f}$\\
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] Given 
-an interval and the desired number of knots, as well as an initial value, 
+a desired RK method, an interval and the desired number of knots, as well as an 
+initial value, 
 calculate a spline and return a function that uses this spline to solve for 
 specific points on the provided interval.
+\item Generate (in a type-safe manner) a family member which contains a 
+spline that approximates the given ODE.
 
 \end{itemize}
 
