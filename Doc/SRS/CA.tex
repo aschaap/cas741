@@ -560,7 +560,51 @@ on.
 
 
 \section{Variabilities}
-\subsection{Instance Models}
+
+Variability in RK method in the \famname{} program family are represented by 
+instance models in \autoref{ssec:instance_models}. Every unique input will 
+result in slightly different code being generated, which could in turn produce 
+different output compared to other family members. This allows for an 
+infinite program family depending on one's definition of program 
+family\footnote{Currently Dr. Smith and Dr. Carette agree they should discuss 
+this definition to compare their differing viewpoints.}. After instance models, 
+assumptions, calculation and output are covered.
+
+\subsection{Assumptions}\label{ssec:Assumptions}
+
+\begin{itemize}
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_RKorder}:] The user 
+will specify what order of RK method they want used during code generation, 
+either second (\iref{T_RK4}) or fourth (\iref{IM_RK2}).
+
+\item[A\refstepcounter{assumpnum}\theassumpnum 
+\label{A_ODEnonstiffcontinuous}:] The ODE (\ddref{DD_ODE}) provided will be 
+continuous and 
+non-stiff (otherwise the user accepts that the results will be inaccurate)
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvaluesata}:] The 
+given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
+interval (\ddref{DD_interval}), represented by $a$.
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvalues}:] 
+Initial value (\ddref{DD_initialvalues}) vector size is expected to match the 
+ones produced by the ODE 
+(\ddref{DD_ODE}).
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_interval}:] The 
+interval's bounds (\ddref{DD_interval}) satisfy $a < b$.
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_stepsize}:] The step 
+size (\ddref{DD_stepsize}) shall be a positive real number.
+
+\end{itemize}
+
+\subsection{Calculation} \label{sec_Calculation}
+
+The family can utilize either of the instance models listed below for any of 
+its members.
+
 \noindent
 \begin{minipage}{\textwidth}
     \renewcommand*{\arraystretch}{1.5}
@@ -620,9 +664,12 @@ on.
         \hline
         Equations &  
         \begin{itemize}
-            \item ${\bf Y}_1 = {\bf x}_k + h {\bf f} (t_k + {\bf x}_k)$
+            \item ${\bf Y}_1 = {\bf x}_k + h {\bf f} (t_k + {\bf x}_k)$ %new 
+            %intermediate point at x_{k+1} by extrapolating slope at x_k
             \item ${\bf x}_{k+1} = {\bf x}_k + h \Big( \dfrac{1}{2} {\bf f} 
-            (t_k,{\bf x}_k) + \dfrac{1}{2} {\bf f} (t_{k+1}, {\bf Y}_1) \Big)$
+            (t_k,{\bf x}_k) + \dfrac{1}{2} {\bf f} (t_{k+1}, {\bf Y}_1) \Big)$ 
+            %new point by averaging slope at current point and slope at new 
+            %point for extrapolating from current point
         \end{itemize}\\
         \hline
         Description & 
@@ -641,31 +688,9 @@ on.
 
 ~\newline
 
-\subsection{Assumptions}\label{ssec:Assumptions}
-
-\begin{itemize}
-
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_meaningfulLabel}:]
-  \wss{Short description of each assumption.  Each assumption
-    should have a meaningful label.  Use cross-references to identify the
-    appropriate traceability to T, GD, DD etc., using commands like dref, ddref 
-    etc.}
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvaluesata}:] The 
-given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
-interval (\ddref{DD_interval}), represented by $a$.
-
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvalues}:] 
-Initial value vector size is expected to match the ones produced by the ODE 
-(\ddref{DD_ODE}).
-
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_interval}:] The 
-interval's bounds satisfy $a \leq b$.
-
-\end{itemize}
-
-\subsection{Calculation} \label{sec_Calculation}
-
 \subsection{Output} \label{sec_Output}    
+N/A. Every program family member will output a numerical approximation of an 
+ODE in the form of a function that can be called by the user.
 
 \section{Traceability Matrices and Graphs}
 
