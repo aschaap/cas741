@@ -22,7 +22,7 @@
 %\usepackage{refcheck}
 
 \hypersetup{
-    bookmarks=true,         % show bookmarks bar?
+%    bookmarks=true,         % show bookmarks bar?
       colorlinks=true,       % false: boxed links; true: colored links
     linkcolor=red,          % color of internal links (change box color with linkbordercolor)
     citecolor=green,        % color of links to bibliography
@@ -80,7 +80,7 @@
 
 \begin{document}
 
-\title{RKF45 Generator} 
+\title{RK Generator} 
 \author{Alexander Schaap}
 \date{\today}
 
@@ -127,7 +127,7 @@ ${\bf f}$ & N/A & ODE for which to solve
 \\
 $h$ & N/A & step size
 \\ 
-$t$ & N/A & an independent variable, perhaps easy to think of as time
+$t$ & N/A & an independent variable, commonly time
 \\ 
 $t_0$ & N/A & beginning of interval
 \\ 
@@ -148,18 +148,16 @@ $\mathbb{R}$ & N/A & Real numbers
 \\ 
 $\mathbb{C}$ & N/A & Complex numbers
 \\ 
-$k_{1..4}, {\bf Y}_1$ & N/A & intermediate variables in the RK methods
+${\bf k}_{1..4}, {\bf Y}_1$ & N/A & intermediate variables in the RK methods
 \\ 
 \bottomrule
 \end{longtable*}
-\wss{Use your problems actual symbols.  The si package is a good idea to use for
-  units.}
 
 \subsection{Abbreviations and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l} 
-  \toprule		
+  \toprule
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   A & Assumption\\
@@ -181,8 +179,6 @@ $k_{1..4}, {\bf Y}_1$ & N/A & intermediate variables in the RK methods
   T & Theoretical Model\\
   \bottomrule
 \end{tabular}\\
-
-\wss{Add any other abbreviations or acronyms that you add}
 
 \newpage
 
@@ -221,7 +217,7 @@ The responsibility of the family is solving the provided ODEs for given
 intervals, initial values and step sizes using the specified RK method. The 
 user will have to ensure the RK method specified is appropriate for their 
 particular problem(s), and they will have to ensure appropriate and correct 
-input is provided (see \ref{ssec:Assumptions} for some starting points). 
+input is provided (see \nameref{ssec:Assumptions}). 
 Additionally, the user will also have to process the output appropriately.
 
 \subsection{Characteristics of Intended Reader} 
@@ -237,7 +233,8 @@ analysis (CA) provided by Dr. W. S. Smith, which is in turn adapted from
 \cite{SmithEtAl2007}.
 
 The structure of this document is essentially top-down, with detail added as 
-one proceeds through it.
+one proceeds through it. A general system description is provided first, 
+followed by commonalities and variabilities. References are listed at the end.
 
 \section{General System Description}
 
@@ -416,7 +413,7 @@ Symbol &${\bf f}$\\
   \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}\\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -483,7 +480,7 @@ Symbol &${\bf f}$\\
         \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -579,7 +576,7 @@ on.
            \cite{corless_graduate_2013} p. 510, 513\\
   % The above web link should be replaced with a proper citation to a publication
   \hline
-  Ref.\ By & \dref{ROCT}\\
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2} \\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -588,7 +585,7 @@ on.
 \section{Variabilities}
 
 Variability in RK method in the \famname{} program family are represented by 
-instance models in \autoref{ssec:instance_models}. Every unique input will 
+instance models in \autoref{sec_Calculation}. Every unique input will 
 result in slightly different code being generated, which could in turn produce 
 different output compared to other family members. This allows for an 
 infinite program family depending on one's definition of program 
@@ -619,7 +616,9 @@ ones produced by the ODE
 (\ddref{DD_ODE}).
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_interval}:] The 
-interval's bounds (\ddref{DD_interval}) satisfy $t_0 < t_N$.
+interval's bounds (\ddref{DD_interval}) satisfy $t_0 < t_N$ (both real 
+numbers) and $t_N - t_0 = n 
+\times h$.
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_stepsize}:] The step 
 size (\ddref{DD_stepsize}) shall be a positive real number.
@@ -665,14 +664,21 @@ its members.
         \hline
         Description & 
         The above equations can be used to calculate (an approximation of) a 
-        new point given the previous or starting point.\\
+        new point given the previous or starting point. Note that the above is 
+        a specific instance (for simplicity) of the general method (namely, the 
+        first step). Calculating a new point is necessary to create a spline to 
+        solve IVPs (\tref{T_IVP}). In addition to the ODE (\ddref{DD_ODE}), 
+        this 
+        also requires an interval (\ddref{DD_interval}), step size 
+        (\ddref{DD_stepsize}) and initial condition 
+        (\ddref{DD_initialvalues}).\\
         \hline
         Source &
         \cite{corless_graduate_2013} p. 618\\
         % The above web link should be replaced with a proper citation to a 
         %publication
         \hline
-        Ref.\ By & \dref{ROCT}\\
+        Ref.\ By & N/A\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -700,14 +706,19 @@ its members.
         \hline
         Description & 
         The above equations can be used to calculate (an approximation of) a 
-        new point given the previous or starting point.\\
+        new point given the previous or starting point. Calculating a new point 
+        is necessary to create a spline to 
+        solve IVPs (\tref{T_IVP}). In addition to the ODE (\ddref{DD_ODE}) this 
+        also requires an interval (\ddref{DD_interval}), step size 
+        (\ddref{DD_stepsize}) and initial condition 
+        (\ddref{DD_initialvalues}).\\
         \hline
         Source &
         \cite{corless_graduate_2013} p. 616 \\
         % The above web link should be replaced with a proper citation to a 
         %publication
         \hline
-        Ref.\ By & \dref{ROCT}\\
+        Ref.\ By & N/A\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -719,26 +730,52 @@ N/A. Every program family member will output a numerical approximation of an
 ODE in the form of a function that can be called by the user.
 
 \section{Traceability Matrices and Graphs}
-
-\begin{tabular}{cccccccccccccc}
+The traceability matrices below show the relationships between the various 
+concepts defined in this document. Rows may be affected by changes in the items 
+the columns consist of (especially in the context of assumptions.)
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lccccccc}
+  \toprule
     & \ddref{DD_ODE} & \ddref{DD_interval} & \ddref{DD_initialvalues} & 
-    \ddref{DD_stepsize} & \tref{T_IVP} & \iref{T_RK4} & \iref{IM_RK2} &  &  &  
-    &  &  &  \\ 
-\ddref{DD_ODE} &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-\ddref{DD_interval}    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-\ddref{DD_initialvalues}    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-\ddref{DD_stepsize}    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-\tref{T_IVP}    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-\iref{T_RK4}    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-\iref{IM_RK2}    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-    &  &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-    &  &  &  &  &  &  &  &  &  &  &  &  & 
-\end{tabular} 
+    \ddref{DD_stepsize} & \tref{T_IVP} & \iref{T_RK4} & \iref{IM_RK2}  \\ 
+    \midrule
+\ddref{DD_ODE} &  &  &  &  & \checkmark &  &  \\ 
+\ddref{DD_interval}    &  &  &  &  & \checkmark &  &  \\ 
+\ddref{DD_initialvalues}    & \checkmark &  &  &  & \checkmark &  &  \\ 
+\ddref{DD_stepsize}    &  & \checkmark &  &  & \checkmark &  &  \\ 
+\tref{T_IVP}    &  &  &  &  &  &  &  \\ 
+\iref{T_RK4}    & \checkmark & \checkmark & \checkmark & \checkmark & 
+\checkmark &  &  \\ 
+\iref{IM_RK2}    & \checkmark & \checkmark & \checkmark & \checkmark & 
+\checkmark &  &  
+\\ 
+\bottomrule
+\end{tabular}
+\caption{Traceability matrix between instance models, data definitions and 
+theory}
+\end{table}
 
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lcccccc}
+  \toprule 
+  & \aref{A_RKorder} & \aref{A_ODEnonstiffcontinuous} & 
+  \aref{A_initialvaluesata} & \aref{A_initialvalues} 
+  & \aref{A_interval} & \aref{A_stepsize} \\ 
+  \midrule 
+\ddref{DD_ODE} &  & \checkmark &  &  &  &  \\ 
+\ddref{DD_interval} &  &  &  &  & \checkmark &  \\ 
+\ddref{DD_initialvalues} &  &  & \checkmark & \checkmark &  &  \\ 
+\ddref{DD_stepsize} &  &  &  &  &  & \checkmark \\ 
+\tref{T_IVP} &  &  & \checkmark &  &  &  \\ 
+\iref{T_RK4} & & \checkmark &  &  &  &  \\ 
+\iref{IM_RK2} & & \checkmark &  &  &  &  \\ 
+  \bottomrule 
+\end{tabular}
+\caption{Traceability matrix for assumptions}
+\end{table}
+\clearpage
 \newpage
 
 \bibliographystyle {plainnat}
