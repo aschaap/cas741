@@ -336,16 +336,15 @@ easier to correctly understand the requirements:
 
 \begin{itemize}
 
-\item Ordinary differential equation (ODE): an equation that involves some 
-ordinary (rather than partial) derivatives of a function. The goal is to find 
-the function that satisfies the equation, and this is not always easily 
-achievable through integration. (See \ddref{DD_ODE}.)
+\item Code generation: producing code programmatically.
+
+\item Compile-time: the time during which a program is compiled.
 
 \item Continuous function: a function that evaluates to a value that is not 
 infinity or undefined for any input.
 
-\item Stiff ODE: an ODE for which certain numerical methods are numerically 
-unstable unless the step size is extremely small. There is no exact definition.
+\item Initial value problem (IVP): an ODE along with initial values for which a 
+numerical approximation must be found.
 
 \item Initial values (initial condition): a starting point from which the rest 
 of the approximation 
@@ -354,23 +353,11 @@ can be calculated. (See \ddref{DD_initialvalues}.)
 \item Interval: interval inside which the ODE needs to be approximated. (See 
 \ddref{DD_interval}.)
 
-\item Step size: the distance between the points that need to be calculated 
-using an RK method, for example. 
-
-\item Initial value problem (IVP): an ODE along with initial values for which a 
-numerical approximation must be found.
-
-\item Runge-Kutta methods: a set of methods that approximate ODEs in IVPs for a 
-given interval and step size.
-
-\item Compile-time: the time during which a program is compiled.
-
-\item Run-time: the time during which a program is run.
+\item MetaOCaml: an extension to the OCaml programming language which adds 
+staging annotations that enable MSP.
 
 \item Metaprogramming: programming software that takes in and/or produces 
 programs.
-
-\item Code generation: producing code programmatically.
 
 \item Multi-stage programming (MSP): a form of metaprogramming where the 
 execution of specific code fragments is delayed; these fragments are then 
@@ -379,8 +366,21 @@ combined into larger fragments and ultimately executed.
 \item OCaml: A multi-paradigm programming language (imperative \& functional) 
 with a syntax that will appear somewhat unusual to most.
 
-\item MetaOCaml: an extension to the OCaml programming language which adds 
-staging annotations that enable MSP.
+\item Ordinary differential equation (ODE): an equation that involves some 
+ordinary (rather than partial) derivatives of a function. The goal is to find 
+the function that satisfies the equation, and this is not always easily 
+achievable through integration. (See \ddref{DD_ODE}.)
+
+\item Runge-Kutta methods: a set of methods that approximate ODEs in IVPs for a 
+given interval and step size.
+
+\item Run-time: the time during which a program is run.
+
+\item Step size: the distance between the points that need to be calculated 
+using an RK method, for example. 
+
+\item Stiff ODE: an ODE for which certain numerical methods are numerically 
+unstable unless the step size is extremely small. There is no exact definition.
 
 \end{itemize}
 
