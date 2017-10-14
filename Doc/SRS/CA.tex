@@ -484,7 +484,7 @@ Symbol &${\bf f}$\\
         \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}\\
+  Ref.\ By & \ddref{DD_stepsize}, \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -511,9 +511,12 @@ Symbol &${\bf f}$\\
         Equation& $t_{k+1} - t_k = h$\\
         \hline
         Description & 
-        $h : \mathbb{R}$ is the size of the steps between the points for which 
-        to find approximations 
-        using RK methods (as described in \iref{T_RK4} and \iref{IM_RK2}).
+        $h : \mathbb{R}$ is the distance between the points within interval 
+        $[t_0,t_N]$ for which to find approximations; it essentially determines 
+        how many points there will be once the interval is known. Once these 
+        points have been approximated, one could interpolate so that the whole 
+        interval is solved for.  %using RK methods (as described in 
+        %\iref{T_RK4} and \iref{IM_RK2}).
         \\
         \hline
   Sources & \cite{corless_graduate_2013} \\
