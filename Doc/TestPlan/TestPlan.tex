@@ -68,7 +68,16 @@ This document ...
 
 \subsection{Purpose}
 
+This document specifies the (black-box) verification and validation tests for 
+the RK Generator. The intended audience are testers aiming to test the system 
+and developers maintaining the software. This document is expected to be 
+updated when development of the system proceeds.
+
 \subsection{Scope}
+
+The scope of the testing of the RK Generator is restricted to correctness, in 
+some cases within an expected margin of error. Performance, while implied, 
+should also be verified.
 
 \subsection{Overview of Document}
 
@@ -78,18 +87,26 @@ This document ...
 
 \subsection{Test Team}
 
-\wss{Probably just you.  :-)}
+%\wss{Probably just you.  :-)}
 Just me.
 \subsection{Automated Testing Approach}
 
+Automated tests exist primarily in the form of unit tests, though some 
+``system'' tests will do black-box verification.
+
 \subsection{Verification Tools}
-OUnit
-Make
-Continuous integration
-Code coverage - bisect_ppx
-\wss{Thoughts on what tools to use, such as the following: unit testing
-  framework, valgrind, static analyzer, make, continuous integration, test
-  coverage tool, etc.}
+%OUnit
+%Make
+%Continuous integration
+%Code coverage - bisect_ppx
+%\wss{Thoughts on what tools to use, such as the following: unit testing
+%  framework, valgrind, static analyzer, make, continuous integration, test
+%  coverage tool, etc.}
+
+For unit tests, OUnit seems an obvious choice. For automating compilation and 
+running unit tests as a primitive form of continuous integration, Make is 
+sufficient. There appears to be a tool to measure code coverage, called 
+bisect\_ppx. It remains to be seen how useful it is for MetaOCaml code.
 
 % \subsection{Testing Schedule}
 		
@@ -97,36 +114,68 @@ Code coverage - bisect_ppx
 
 \subsection{Non-Testing Based Verification}
 
-\wss{List any approaches like code inspection, code walkthrough, symbolic
-  execution etc.  Enter not applicable if that is the case.}
+%\wss{List any approaches like code inspection, code walkthrough, symbolic
+%  execution etc.  Enter not applicable if that is the case.}
+
+Ideally, unit tests capture all the desired behaviour. \textbf{What do code 
+inspection/walkthrough add? Also not practical as there are few MetaOCaml 
+developers.}
 
 \section{System Test Description}
-	
+
+Also known as black-box tests, system tests verify the software as a whole. 
+This is done without assumed knowledge of the internal workings.
+
 \subsection{Tests for Functional Requirements}
 
-Compare with Matlab or Octave's rseults
+The intent is to test using problems with known solutions to get around oracle 
+problem.
+Results of other ODE solvers such as Matlab or Octave can be used for 
+comparison purposes in case of unknown solutions.
 
-Use problems with known solutions to get around oracle problem
-
-mostly black box testing
-\subsubsection{Area of Testing1}
+\subsubsection{RK4}
 		
 \paragraph{Title for Test}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{Low-order-ODE\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
+Type: Functional, Dynamic
 					
 Initial State: 
 					
-Input: 
+Input: \textbf{a low order ODE for which an exact solution is known}
 					
-Output: 
+Output: The exact solution
 					
-How test will be performed: 
+How test will be performed: via OUnit
 					
+\item{High-order-ODE\\}
+
+Type: Functional, Dynamic
+
+Initial State: 
+
+Input: \textbf{a high order ODE for which a fairly accurate solution is known}
+
+Output: The solution, within a margin of error
+
+How test will be performed: via OUnit
+
+\item{Stiff-ODE\\}
+
+Type: Functional, Dynamic
+
+Initial State: 
+
+Input: \textbf{a stiff ODE for which a fairly accurate solution is known}
+
+Output: An inaccurate result
+
+How test will be performed: via OUnit
+
+
 \item{test-id2\\}
 
 Type: Functional, Dynamic, Manual, Static etc.
@@ -141,7 +190,7 @@ How test will be performed:
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\subsubsection{RK2}
 
 ...
 
@@ -227,6 +276,12 @@ How test will be performed:
 		
 \wss{Unit testing plans for internal functions and, if appropriate, output
   files}
+
+Unit tests can be divided into two distinct parts. The first set verifies 
+portions of the generator, while the second part has to verify the generated 
+code.
+
+
 
 \bibliographystyle{plainnat}
 
