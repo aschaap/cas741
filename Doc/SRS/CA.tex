@@ -131,7 +131,8 @@ ${\bf f}$ & ODE for which to solve
 $h$ & step size
 \\ 
 ${\bf k}_{1..4}$ & intermediate variables in the RK4 method, similar to 
-${\bf Y}_1$
+${\bf Y}_1$ \wss{I don't know what the subscript notation means here.  Do you
+  have 4 vectors of $k$ values or one vector with 4 values?}
 \\ 
 $\mathbb{R}$ & Real numbers
 \\ 
@@ -145,7 +146,7 @@ $t_k$ & any $t$ on the interval $[t_0..t_N]$
 \\ 
 ${\bf x(t)}$ & a function of $t$
 \\ 
-${\bf x}'$ & derivative of ${\bf x(t)}$
+${\bf x}'$ & derivative of ${\bf x(t)}$ \wss{add: with respect to $t$}
 \\ 
 ${\bf x}_0$ & initial values for ${\bf f}$
 \\ 
@@ -225,10 +226,19 @@ particular problem(s), and they will have to ensure appropriate and correct
 input is provided (see \nameref{ssec:Assumptions}). 
 Additionally, the user will also have to process the output appropriately.
 
+\wss{Your scope should specify which kind of ODEs you solve.  Your software
+  solves systems of first order ODEs.  You do not solve higher order ODEs,
+  presumably because they can be recast as systems of first order ODEs.  In
+  addition, the functional form of your ODE can be given explicitly, as opposed
+  to being in implicit form.}
+
 \subsection{Characteristics of Intended Reader} 
-The reader is expected to have some undergraduate STEM and functional 
-programming background. Ideally, they have been exposed to some calculus and 
-programming courses.
+The reader is expected to have some undergraduate STEM and functional
+programming background. Ideally, they have been exposed to some calculus and
+programming courses. \wss{For the characteristics of intended reader try to be
+  more specific about the education.  What degree?  What course areas?  What
+  level?}
+
 
 \subsection{Organization of Document}
 %inspired by FamilyOfMaterialModels
@@ -416,7 +426,8 @@ Symbol &${\bf f}$\\
                  ${\bf f} : \mathbb{R} \times \mathbb{C}^n \rightarrow 
                  \mathbb{C}^n$ is the equation for which we ultimately want to 
                  find 
-                 a numerical approximation.
+                 a numerical approximation. \wss{I don't think this is true.
+                You know $f$ and you are trying to find $x$.}
   \\
   \hline
   Sources & \cite{corless_graduate_2013} \\
@@ -542,6 +553,12 @@ interval.
 
 \end{itemize}
 
+\wss{Why are you mentioning a spline?  In addition to solving the ode at the
+  specified points, are you interpolating between the points using a spline?  If
+  so, you should add information defining a spline, and you'll need to be more
+  specific on what spline you are using in terms of order and continuity
+  conditions at the knots.}
+
 \subsection{Theoretical Models} \label{sec_theoretical}
 
 This section focuses on the general equations and laws that \famname{} is based
@@ -590,19 +607,25 @@ on.
 \end{tabular}
 \end{minipage}\\
 
+\wss{It would be better if you used the instance model template for your
+  theoretical model.  In particular, a clear separation between the inputs and
+  the ouputs would be nice.}
 
 \section{Variabilities}
 
-Assumptions on all variations of the program family are covered first. 
-Variability in RK method in the \famname{} program family are represented by 
-instance models in \nameref{sec_Calculation}. Every unique input will 
-result in slightly different code being generated, which could in turn produce 
-different output compared to other family members. This allows for an 
-infinite program family depending on one's definition of program 
-family\footnote{Currently Dr. Smith and Dr. Carette agree they should discuss 
-this definition to compare their overlapping but slightly differing 
-viewpoints.}. After instance models, the lack of variability in output is 
-covered.
+Assumptions on all variations of the program family are covered first.
+Variability in RK method in the \famname{} program family are represented by
+instance models in \nameref{sec_Calculation}. Every unique input will result in
+slightly different code being generated, which could in turn produce different
+output compared to other family members. This allows for an infinite program
+family depending on one's definition of program family\footnote{Currently
+  Dr. Smith and Dr. Carette agree they should discuss this definition to compare
+  their overlapping but slightly differing viewpoints. \wss{By default, LaTeX
+    puts two spaces after a period, since it assumes that the period ends a
+    sentence.  To override this, use x.\ y or x.~y.  The first puts one space,
+    the second option also does one space, with the added constraint that a line
+    break cannot happen at the space.}}. After instance models, the lack of
+variability in output is covered.
 
 \subsection{Assumptions}\label{ssec:Assumptions}
 
@@ -610,7 +633,8 @@ covered.
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_RKorder}:] The user 
 will specify what order of RK method they want used during code generation, 
-either second (\iref{T_RK4}) or fourth (\iref{IM_RK2}).
+either second (\iref{T_RK4}) or fourth (\iref{IM_RK2}). \wss{This is a
+  variability, but it isn't an assumption.}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum 
 \label{A_ODEnonstiffcontinuous}:] The ODE (\ddref{DD_ODE}) provided will be 
@@ -619,7 +643,8 @@ non-stiff (otherwise the user accepts that the results will be inaccurate)
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvaluesata}:] The 
 given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
-interval (\ddref{DD_interval}), represented by $t_0$.
+interval (\ddref{DD_interval}), represented by $t_0$. \wss{The assumptions don't
+  need to repeat things you have alread said.}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvalues}:] 
 Initial value (\ddref{DD_initialvalues}) vector size is expected to match the 
@@ -629,17 +654,31 @@ ones produced by the ODE
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_interval}:] The 
 interval's bounds (\ddref{DD_interval}) satisfy $t_0 < t_N$ (both real 
 numbers) and $t_N - t_0 = n 
-\times h$.
+\times h$. \wss{In general with floating point arithmetic this won't necessarily
+  be true.  In practice if $h$ is added to the time for each time step, you
+  won't end exactly at $t_N$.  Do you really need this assumption to be true?}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_stepsize}:] The step 
-size (\ddref{DD_stepsize}) shall be a positive real number.
+size (\ddref{DD_stepsize}) shall be a positive real number. \wss{You can give
+  this through the type of $h$; you don't need an assumption for this information.}
 
 \end{itemize}
+
+\wss{It is okay to have a short list of assumptions.  It feels like you might
+  have been trying to ``pad'' the list.  What about an assumption that $f$ is
+  continuous on the interval of computation?}
 
 \subsection{Calculation} \label{sec_Calculation}
 
 The family can utilize either of the instance models listed below for any of 
 its members.
+
+\wss{To make this clear that you have a family of methods, I would introduce an
+  instance model for one-step initial value problem solvers.  The equation would
+  be $${\bf x}_{k+1} = {\bf x}_k + h \phi(t_k, {\bf x}_k, h_k)$$  The only
+  difference for your family members is how $\phi$ is defined.  This approach
+  would let you easily add new family members in the specification, simply by
+  giving new values for $\phi$.}
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -677,7 +716,8 @@ its members.
         The above equations can be used to calculate (an approximation of) a 
         new point given the previous or starting point. Note that the above is 
         a specific instance (for simplicity) of the general method (namely, the 
-        first step). Calculating a new point is necessary to create a spline to 
+        first step). \wss{Why specify the first step?  Why not specify the $k$th
+                      step?}  Calculating a new point is necessary to create a spline to 
         solve IVPs (\tref{T_IVP}). In addition to the ODE (\ddref{DD_ODE}), 
         this 
         also requires an interval (\ddref{DD_interval}), step size 
@@ -693,6 +733,8 @@ its members.
         \hline
     \end{tabular}
 \end{minipage}\\
+
+\wss{Again, I'm not sure how splines fit into this?}
 
 ~\newline
 \noindent
@@ -735,6 +777,9 @@ its members.
 \end{minipage}\\
 
 ~\newline
+
+\wss{Why isn't the function $f$ listed as a variability?  You get a different
+  program depending on the value of $f$.}
 
 \subsection{Output} \label{sec_Output}    
 N/A. Every program family member will output a numerical approximation of an 
