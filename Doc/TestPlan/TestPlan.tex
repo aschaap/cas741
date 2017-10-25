@@ -77,7 +77,8 @@ updated when development of the system proceeds.
 
 The scope of the testing of the RK Generator is restricted to correctness, in 
 some cases within an expected margin of error. Performance, while implied, 
-should also be verified. (This requires an unstaged version of the same code.)
+should also be verified. (This requires an unstaged version of the same code. 
+Alternatively, a comparison against matlab would also be nice.)
 
 \subsection{Overview of Document}
 
@@ -117,9 +118,9 @@ bisect\_ppx. It remains to be seen how useful it is for MetaOCaml code.
 %\wss{List any approaches like code inspection, code walkthrough, symbolic
 %  execution etc.  Enter not applicable if that is the case.}
 
-Ideally, unit tests capture all the desired behaviour. \textbf{What do code 
-inspection/walkthrough add? Also not practical as there are few MetaOCaml 
-developers.}
+Ideally, unit tests capture all the desired behaviour.
+
+Could have manual assessment of (differences in) generated code.
 
 \section{System Test Description}
 
@@ -159,7 +160,8 @@ Initial State:
 
 Input: \textbf{a high order ODE for which a fairly accurate solution is known}
 
-Output: The solution, within a margin of error
+Output: The solution, within a margin of error; error should be within 
+$O(h^5)$. A plot of the error should indicate this.
 
 How test will be performed: via OUnit
 
@@ -189,6 +191,12 @@ Output:
 How test will be performed: 
 
 \end{enumerate}
+
+Test via diffing the output of the generator with previous results and decide 
+whether any change is desired or not
+
+Inspect code to see whether it matches the algorithm; aim to write code that 
+reflects it.
 
 \subsubsection{RK2}
 
@@ -233,6 +241,8 @@ How test will be performed:
 ...
 
 \subsection{Traceability Between Test Cases and Requirements}
+
+N/A - No requirements. (Possibly create requirements later?)
 
 % \section{Tests for Proof of Concept}
 
