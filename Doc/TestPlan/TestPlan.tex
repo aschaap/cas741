@@ -30,7 +30,7 @@
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 October 16 & 1.0 & Initial draft for presentation\\
-%Date 2 & 1.1 & Notes\\
+October 25 & 1.1 & Processed feedback and completed report\\
 \bottomrule
 \end{tabularx}
 
@@ -169,11 +169,14 @@ How test will be performed: via OUnit
 
 Type: Functional, Dynamic
 
-Initial State: 
+Initial State: N/A
 
-Input: \textbf{a stiff ODE for which a fairly accurate solution is known}
+Input: $y'(t) = -15y(t),\quad t \geq 0, y(0) = 1$ with interval $[0,1]$ and 
+step size 0.1.
 
-Output: An inaccurate result
+Output: An inaccurate numeric result that deviates significantly from the exact 
+solution of $y(t) = e^{-15t}$ with $y(t) \rightarrow 0$ as $t \rightarrow 
+\infty$
 
 How test will be performed: via OUnit
 
