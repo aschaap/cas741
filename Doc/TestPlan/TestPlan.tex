@@ -77,11 +77,13 @@ updated when development of the system proceeds.
 
 The scope of the testing of the RK Generator is restricted to correctness, in 
 some cases within an expected margin of error. Performance, while implied, 
-should also be verified. (This requires an unstaged version of the same code. 
-Alternatively, a comparison against matlab would also be nice.)
+should also be measured. The implementation could be compared to an unstaged 
+version of the same code (plain OCaml rather than MetaOCaml; no generation). 
+Alternatively, a comparison against Matlab would give an indication of 
+performance compared to the competition.
 
 \subsection{Overview of Document}
-
+The structure of this documents is based on \cite{Smith2006}.
 \section{Plan}
 	
 \subsection{Software Description}
@@ -106,8 +108,11 @@ Automated tests exist primarily in the form of unit tests, though some
 
 For unit tests, OUnit seems an obvious choice. For automating compilation and 
 running unit tests as a primitive form of continuous integration, Make is 
-sufficient. There appears to be a tool to measure code coverage, called 
-bisect\_ppx. It remains to be seen how useful it is for MetaOCaml code.
+sufficient. Unit tests give us regression testing for free. A tool exists to 
+measure code coverage. It is called bisect\_ppx and appears actively 
+maintained. It remains to be seen how useful it is for MetaOCaml code. While 
+code coverage has its weaknesses, it should suffice because there is little 
+branching in this software.
 
 % \subsection{Testing Schedule}
 		
@@ -118,9 +123,11 @@ bisect\_ppx. It remains to be seen how useful it is for MetaOCaml code.
 %\wss{List any approaches like code inspection, code walkthrough, symbolic
 %  execution etc.  Enter not applicable if that is the case.}
 
-Ideally, unit tests capture all the desired behaviour.
-
-Could have manual assessment of (differences in) generated code.
+Ideally, unit tests capture all the desired behaviour. However, manual 
+assessment of the generated code will be required. To make this easier, 
+generating readable code is desirable. The manual assessment should determine 
+whether modifications to the generator are beneficial to either making the code 
+more readable or improving the results in terms of accuracy.
 
 \section{System Test Description}
 
@@ -206,6 +213,9 @@ reflects it.
 ...
 
 \subsection{Tests for Nonfunctional Requirements}
+
+While readability isn't strictly a requirement, simple (and therefore more 
+readable) code is often a decent indicator of correctness in metaprogramming.
 
 \subsubsection{Area of Testing1}
 		
