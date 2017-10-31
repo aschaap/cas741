@@ -30,7 +30,7 @@
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 October 16 & 1.0 & Initial draft for presentation\\
-%Date 2 & 1.1 & Notes\\
+October 25 & 1.1 & Processed feedback and completed report\\
 \bottomrule
 \end{tabularx}
 
@@ -43,6 +43,7 @@ October 16 & 1.0 & Initial draft for presentation\\
   \toprule		
   \textbf{symbol} & \textbf{description}\\
   \midrule 
+  ODE & Ordinary Differential Equation\\
   T & Test\\
   \bottomrule
 \end{tabular}\\
@@ -62,9 +63,11 @@ October 16 & 1.0 & Initial draft for presentation\\
 
 \pagenumbering{arabic}
 
-This document ...
+%This document ...
 
 \section{General Information}
+
+This document is a test plan for the RK Generator family of ODE solvers.
 
 \subsection{Purpose}
 
@@ -77,18 +80,37 @@ updated when development of the system proceeds.
 
 The scope of the testing of the RK Generator is restricted to correctness, in 
 some cases within an expected margin of error. Performance, while implied, 
-should also be verified. (This requires an unstaged version of the same code.)
+should also be measured. The implementation could be compared to an unstaged 
+version of the same code (plain OCaml rather than MetaOCaml; no generation). 
+Alternatively, a comparison against Matlab would give an indication of 
+performance compared to the competition.
 
 \subsection{Overview of Document}
+The structure of this documents is based on \cite{Smith2006}. The next section 
+will outline the software to test, the testing team and the proposed approach.
+Subsequently, system tests are covered, and ultimately unit tests will be added 
+in the section after that. 
 
 \section{Plan}
-	
+This section begins with a brief description of the software being tested, 
+followed by a succinct description of the test team before discussing the 
+automated approach proposed, the tools expected to accomplish this, and the 
+manual testing necessary.
+%Testing will occur in various ways: automated unit testing, manual code 
+%walkthroughs, and performance comparison.
+
 \subsection{Software Description}
+
+The RK Generator is a metaprogramming approach to a library of ODE solvers.
+It generates a function that will provide values for input on the given 
+interval. This function will be unique to the inputs provided. During the 
+creation of this function, metaprogramming is also employed for performance 
+reasons.
 
 \subsection{Test Team}
 
 %\wss{Probably just you.  :-)}
-Just me.
+The test ``team'' will be comprise Alexander Schaap.
 \subsection{Automated Testing Approach}
 
 Automated tests exist primarily in the form of unit tests, though some 
@@ -105,8 +127,11 @@ Automated tests exist primarily in the form of unit tests, though some
 
 For unit tests, OUnit seems an obvious choice. For automating compilation and 
 running unit tests as a primitive form of continuous integration, Make is 
-sufficient. There appears to be a tool to measure code coverage, called 
-bisect\_ppx. It remains to be seen how useful it is for MetaOCaml code.
+sufficient. Unit tests give us regression testing for free. A tool exists to 
+measure code coverage. It is called bisect\_ppx and appears actively 
+maintained. It remains to be seen how useful it is for MetaOCaml code. While 
+code coverage has its weaknesses, it should suffice because there is little 
+branching in this software.
 
 % \subsection{Testing Schedule}
 		
@@ -117,14 +142,20 @@ bisect\_ppx. It remains to be seen how useful it is for MetaOCaml code.
 %\wss{List any approaches like code inspection, code walkthrough, symbolic
 %  execution etc.  Enter not applicable if that is the case.}
 
-Ideally, unit tests capture all the desired behaviour. \textbf{What do code 
-inspection/walkthrough add? Also not practical as there are few MetaOCaml 
-developers.}
+Ideally, unit tests capture all the desired behaviour. However, manual 
+inspection of the generated code will be required. The manual assessment should 
+determine 
+whether modifications to the generator are beneficial to either making the code 
+more readable or improving the results in terms of accuracy.
+While readability isn't strictly a requirement, simple (and therefore more 
+readable) code is often a decent indicator of correctness in metaprogramming.
+
 
 \section{System Test Description}
 
 Also known as black-box tests, system tests verify the software as a whole. 
 This is done without assumed knowledge of the internal workings.
+This section covers the system tests along with non-functional tests.
 
 \subsection{Tests for Functional Requirements}
 
@@ -132,34 +163,64 @@ The intent is to test using problems with known solutions to get around oracle
 problem.
 Results of other ODE solvers such as Matlab or Octave can be used for 
 comparison purposes in case of unknown solutions.
+Currently, all tests have known solutions.
 
-\subsubsection{RK4}
-		
-\paragraph{Title for Test}
+It is assumed that these tests test both the generator and the generated code. 
+The inputs therefore are for the generator, but inputs are also needed for the 
+generated code. Since the generator creates a function that takes one input, 
+the input for generated code is provided one at a time (making the generated 
+code run multiple times, which should be the typical use case).
+
+\subsubsection{RK4 \& RK2}
+These tests are to be repeated for each method. The expected results for each 
+method are described separately.
+
+\paragraph{Solution Correctness Tests}
+
 
 \begin{enumerate}
 
-\item{Low-order-ODE\\}
+\item{Low-order-ODE\footnote{Adapted from:
+\url{http://mathinsight.org/ordinary_differential_equation_introduction_examples}}\\}
 
 Type: Functional, Dynamic
 					
-Initial State: 
+Initial State: N/A
 					
-Input: \textbf{a low order ODE for which an exact solution is known}
+Input (generator): $x'(t) = 5x - 3 \quad x(2) = 1, \quad 2 \leq t \leq 3, \quad 
+h = 0.1$
+
+Input (generated): 2, 3, 0, -1024, 2.2, 2.5, 23
 					
-Output: The exact solution
+Output (RK4): values that match\footnote{Taking potential floating-point 
+rounding 
+errors into account} the output of the exact solution $x(t) = \frac{2}{5} 
+e^{5(t-2)} + \frac{3}{5}$ for the same inputs
+
+Output (RK2): similar to RK4, but with some margin of error that is within 
+$O(h^3)$.
 					
 How test will be performed: via OUnit
 					
-\item{High-order-ODE\\}
+\item{High-order-ODE\footnote{Adapted from:
+\url{http://mathinsight.org/ordinary_differential_equation_introduction_examples}}\\}
 
 Type: Functional, Dynamic
 
-Initial State: 
+Initial State: N/A
 
-Input: \textbf{a high order ODE for which a fairly accurate solution is known}
+Input (generator): $x'(t) = 7x^2x^3 \quad x(2) = 3, \quad 2 \leq t \leq 4, 
+\quad h = 0.1$
 
-Output: The solution, within a margin of error
+Input (generator): 2, 3, 0, 2.5, -89, 8192
+
+Output (RK4): values close to the exact solution $x(t) = 
+\frac{-1}{\frac{7}{4}x^4 - 
+\frac{85}{3}}$; error should be within $O(h^5)$. A plot of the error could help 
+indicate this in a way that gives more confidence.
+
+Output (RK2): similar to that of RK4, but with the larger margin of error of 
+$O(h^3)$.
 
 How test will be performed: via OUnit
 
@@ -167,72 +228,102 @@ How test will be performed: via OUnit
 
 Type: Functional, Dynamic
 
-Initial State: 
+Initial State: N/A
 
-Input: \textbf{a stiff ODE for which a fairly accurate solution is known}
+Input: $y'(t) = -15y(t),\quad  y(0) = 1, \quad 0 \leq t \leq 1, \quad h = 0.1$.
 
-Output: An inaccurate result
+Output (RK4 \& RK2): An inaccurate numeric result that deviates significantly 
+from the exact 
+solution of $y(t) = e^{-15t}$ with $y(t) \rightarrow 0$ as $t \rightarrow 
+\infty$ (or even as $t \rightarrow 1$).
 
 How test will be performed: via OUnit
 
 
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+%\item{test-id2\\}
+%
+%Type: Functional, Dynamic, Manual, Static etc.
+%					
+%Initial State: 
+%					
+%Input: 
+%					
+%Output: 
+%					
+%How test will be performed: 
 
 \end{enumerate}
 
-\subsubsection{RK2}
+Test via diffing the output of the generator with previous results and decide 
+whether any change is desired or not
+
+Inspect code to see whether it matches the algorithm; aim to write code that 
+reflects it.
 
 ...
 
 \subsection{Tests for Nonfunctional Requirements}
-
-\subsubsection{Area of Testing1}
+The implied nonfunctional requirement to be tested is performance. There is no 
+``wrong'' result though. The goal is to provide insight into the performance in 
+comparison to obvious alternatives.
+\subsubsection{Performance Tests}
 		
-\paragraph{Title for Test}
+\paragraph{Calculation Speed Tests}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{Comparison against unstaged (plain OCaml) code\\}
 
-Type: 
+Type: Non-Functional, Dynamic
 					
-Initial State: 
+Initial State: N/A
 					
-Input/Condition: 
+Input/Condition: Input to any one of the functional tests will be provided to 
+both versions 
+of the code, but the objective is to compare running times
 					
-Output/Result: 
+Output/Result: identical outputs that correspond to the expected output of the 
+respective test chosen, but the staged (MetaOCaml) code should be 
+faster
 					
-How test will be performed: 
+How test will be performed: via Make and OUnit
 					
-\item{test-id2\\}
+\item{Comparison against Matlab\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
+Type: Non-Functional, Dynamic
 					
-Initial State: 
+Initial State: N/A
 					
-Input: 
+Input: Input to any one of the functional tests above will be provided to both 
+Matlab and the generator (note that Matlab could require a different input 
+format)
 					
-Output: 
+Output: Similar output but with the expectation that Matlab may be more 
+accurate. Matlab will also likely be faster (excluding start-up time).
 					
-How test will be performed: 
+How test will be performed: via Make
+
+%\item{Comparison against Matlab\\}
+%
+%Type: Functional, Dynamic, Manual, Static etc.
+%
+%Initial State: 
+%
+%Input: 
+%
+%Output: 
+%
+%How test will be performed: 
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
-
+%\subsubsection{Area of Testing2}
+%
 ...
 
 \subsection{Traceability Between Test Cases and Requirements}
+
+N/A - No requirements, just a commonality analysis (which implies requirements).
 
 % \section{Tests for Proof of Concept}
 
@@ -274,18 +365,25 @@ How test will be performed:
 				
 \section{Unit Testing Plan}
 		
-\wss{Unit testing plans for internal functions and, if appropriate, output
-  files}
-
 Unit tests can be divided into two distinct parts. The first set verifies 
 portions of the generator, while the second part has to verify the generated 
 code.
+
+One could easily assume that verifying a generator is similar to verifying 
+other programs, and that tools can be reused for this purpose. However, a 
+common approach at the moment is to write generated code to a file and use 
+``diff'' to compare the two.
+By comparing the generator's output to previous generator output for identical 
+inputs the tester can manually determine by careful examination whether any 
+differences are appropriate.
+
+These tests will have to be defined after implementation.
 
 
 
 \bibliographystyle{plainnat}
 
-\bibliography{SRS}
+\bibliography{../References,../ReferencesA}
 
 \newpage
 
