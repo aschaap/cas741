@@ -1,0 +1,497 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{fullpage}
+\usepackage[round]{natbib}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=red,
+    urlcolor=blue
+}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add 
+  %\usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\footnotesize,        % the size of the fonts that are used for 
+  %the code
+  breakatwhitespace=false,         % sets if automatic breaks should only 
+  %happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the 
+  %given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 
+  %8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping 
+  %indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=ML,                 % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible 
+  %values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed 
+  %on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular 
+  %underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular 
+  %underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 
+  %1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with 
+  %\lstinputlisting; also try caption instead of title
+}
+\input{../../Comments}
+
+\newcounter{acnum}
+\newcommand{\actheacnum}{AC\theacnum}
+\newcommand{\acref}[1]{AC\ref{#1}}
+
+\newcounter{ucnum}
+\newcommand{\uctheucnum}{UC\theucnum}
+\newcommand{\uref}[1]{UC\ref{#1}}
+
+\newcounter{mnum}
+\newcommand{\mthemnum}{M\themnum}
+\newcommand{\mref}[1]{M\ref{#1}}
+
+\begin{document}
+
+\title{Module Guide: Project Title} 
+\author{Author Name}
+\date{\today}
+
+\maketitle
+
+\pagenumbering{roman}
+
+\section{Revision History}
+
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
+\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\midrule
+November 3 & 1.0 & Initial Draft\\
+%Date 2 & 1.1 & Notes\\
+\bottomrule
+\end{tabularx}
+
+\newpage
+
+\tableofcontents
+
+\listoftables
+
+\listoffigures
+
+\newpage
+
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+Decomposing a system into modules is a commonly accepted approach to developing
+software.  A module is a work assignment for a programmer or programming
+team~\citep{ParnasEtAl1984}.  We advocate a decomposition
+based on the principle of information hiding~\citep{Parnas1972a}.  This
+principle supports design for change, because the ``secrets'' that each module
+hides represent likely future changes.  Design for change is valuable in SC,
+where modifications are frequent, especially during initial development as the
+solution space is explored.  
+
+Our design follows the rules laid out by \citet{ParnasEtAl1984}, as follows:
+\begin{itemize}
+\item System details that are likely to change independently should be the
+  secrets of separate modules.
+\item Each data structure is used in only one module.
+\item Any other program that requires information stored in a module's data
+  structures must obtain it by calling access programs belonging to that module.
+\end{itemize}
+
+After completing the first stage of the design, the Software Requirements
+Specification (SRS), the Module Guide (MG) is developed~\citep{ParnasEtAl1984}. The MG
+specifies the modular structure of the system and is intended to allow both
+designers and maintainers to easily identify the parts of the software.  The
+potential readers of this document are as follows:
+
+\begin{itemize}
+\item New project members: This document can be a guide for a new project member
+  to easily understand the overall structure and quickly find the
+  relevant modules they are searching for.
+\item Maintainers: The hierarchical structure of the module guide improves the
+  maintainers' understanding when they need to make changes to the system. It is
+  important for a maintainer to update the relevant sections of the document
+  after changes have been made.
+\item Designers: Once the module guide has been written, it can be used to
+  check for consistency, feasibility and flexibility. Designers can verify the
+  system in various ways, such as consistency among modules, feasibility of the
+  decomposition, and flexibility of the design.
+\end{itemize}
+
+The rest of the document is organized as follows. Section
+\ref{SecChange} lists the anticipated and unlikely changes of the software
+requirements. Section \ref{SecMH} summarizes the module decomposition that
+was constructed according to the likely changes. Section \ref{SecConnection}
+specifies the connections between the software requirements and the
+modules. Section \ref{SecMD} gives a detailed description of the
+modules. Section \ref{SecTM} includes two traceability matrices. One checks
+the completeness of the design against the requirements provided in the SRS. The
+other shows the relation between anticipated changes and the modules. Section
+\ref{SecUse} describes the use relation between modules.
+
+\section{Anticipated and Unlikely Changes} \label{SecChange}
+
+This section lists possible changes to the system. According to the likeliness
+of the change, the possible changes are classified into two
+categories. Anticipated changes are listed in Section \ref{SecAchange}, and
+unlikely changes are listed in Section \ref{SecUchange}.
+
+\subsection{Anticipated Changes} \label{SecAchange}
+
+Anticipated changes are the source of the information that is to be hidden
+inside the modules. Ideally, changing one of the anticipated changes will only
+require changing the one module that hides the associated decision. The approach
+adapted here is called design for
+change.
+
+\begin{description}
+\item[\refstepcounter{acnum} \actheacnum \label{acAlgorithm}:] The algorithm 
+used to solve the given IVP.
+\item[\refstepcounter{acnum} \actheacnum \label{acImplementation}:] The 
+implementation of the algorithms used to solve the IVP.
+\item ...
+\end{description}
+
+\subsection{Unlikely Changes} \label{SecUchange}
+
+The module design should be as general as possible. However, a general system is
+more complex. Sometimes this complexity is not necessary. Fixing some design
+decisions at the system architecture stage can simplify the software design. If
+these decision should later need to be changed, then many parts of the design
+will potentially need to be modified. Hence, it is not intended that these
+decisions will be changed.
+
+\begin{description}
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucOutput}:] Output format 
+(generated code).
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucInput}:] The way the driver 
+invokes the software.
+\item ...
+\end{description}
+
+%\section{Module Hierarchy} \label{SecMH}
+%
+%This section provides an overview of the module design. Modules are summarized
+%in a hierarchy decomposed by secrets in Table \ref{TblMH}. The modules listed
+%below, which are leaves in the hierarchy tree, are the modules that will
+%actually be implemented.
+%
+%\begin{description}
+%\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
+%\item ...
+%\end{description}
+%
+%
+%\begin{table}[h!]
+%\centering
+%\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+%\toprule
+%\textbf{Level 1} & \textbf{Level 2}\\
+%\midrule
+%
+%{Hardware-Hiding Module} & ~ \\
+%\midrule
+%
+%\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
+%& ?\\
+%& ?\\
+%& ?\\
+%& ?\\
+%& ?\\
+%& ?\\ 
+%& ?\\
+%\midrule
+%
+%\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
+%& ?\\
+%& ?\\
+%\bottomrule
+%
+%\end{tabular}
+%\caption{Module Hierarchy}
+%\label{TblMH}
+%\end{table}
+
+\section{Binding Times}
+
+This section will demonstrate the difference between binding times via the 
+oft-used power example.
+
+\begin{lstlisting}
+let square x = x * x
+let rec power n x =
+  if n = 0 then 1
+  else if n mod 2 = 0 then square (power (n/2) x)
+  else x * (power (n-1) x)
+(* val power : int -> int -> int = <fun> *)
+\end{lstlisting}
+
+(The comment below the code shows the reply of the MetaOCaml toplevel.)
+
+Suppose our program has to compute $x^7$ many times. We may define
+\begin{lstlisting}
+let power7 x = power 7 x
+\end{lstlisting}
+to name and share the partial application.
+
+In MetaOCaml, we may also specialize the power function to a particular value 
+n, obtaining the code which will later receive x and compute $x^n$. We re-write 
+power n x annotating expressions as computed `now' (when n is known) or `later' 
+(when x is given).
+\begin{lstlisting}
+let rec spower n x =
+  if n = 0 then .<1>.
+  else if n mod 2 = 0 then .<square .~(spower (n/2) x)>.
+  else .<.~x * .~(spower (n-1) x)>.;;
+(* val spower : int -> int code -> int code = <fun> *)
+\end{lstlisting}
+The two annotations, or staging constructs, are brackets \lstinline|.< e >.| 
+and escape \lstinline|.~e| 
+. Brackets \lstinline|.< e >.| `quasi-quote' the expression e, annotating it as 
+computed 
+later. Escape \lstinline|.~e|, which must be used within brackets, tells that e 
+is computed 
+now but produces the result for later. That result, the code, is spliced-in 
+into the containing bracket. The inferred type of spower is different. The 
+result is no longer an int, but int code -- the code of expressions that 
+compute an int. The type of spower spells out which argument is received now, 
+and which later: the future-stage argument has the code type. To specialize 
+spower to 7, we define
+\begin{lstlisting}
+let spower7_code = .<fun x -> .~(spower 7 .<x>.)>.;;
+(*
+val spower7_code : (int -> int) code = .<
+  fun x_1 ->
+    (x_1 *
+      (((* cross-stage persistent value (id: square) *))
+        (x_1 * (((* cross-stage persistent value (id: square) *)) (x_1 * 1)))))
+  >.
+*)
+\end{lstlisting}
+and obtain the code of a function that will receive x and return $x^7$. Code, 
+even of functions, can be printed, which is what MetaOCaml toplevel just did. 
+The print-out contains so-called cross-stage persistent values, or CSP, which 
+`quote' present-stage values such as square to be used later. One may think of 
+CSP as references to `external libraries' -- only in our case the program acts 
+as a library for the code it generates. If square were defined in a separate 
+file, say, sq.ml, then its occurrence in \lstinline|spower7_code| would have 
+been printed 
+simply as Sq.square.
+
+To use thus specialized $x^7$ now, in our code, we should `run' 
+\lstinline|spower7_code|, 
+applying the function \lstinline|Runcode.run : 'a code -> 'a|. The function 
+compiles the 
+code and links it back to our program. 
+%For historical reasons, Runcode.run is aliased to the prefix operation (!.):
+
+\begin{lstlisting}
+open Runcode
+let spower7 = !. spower7_code
+(* val spower7 : int -> int = <fun> *)
+\end{lstlisting}
+
+The specialized \lstinline|spower7| has the same type as the partially applied 
+\lstinline|power7| above. They behave identically. However, 
+\lstinline|power7 x| will do the recursion on $n$, checking $n$'s parity, etc. 
+In contrast, the specialized \lstinline|spower7| has no recursion (as can be 
+seen from \lstinline|spower7_code|). All operations on n have been done when 
+the \lstinline|spower7_code| was computed, producing the straight-line code 
+\lstinline|spower7| that only multiplies $x$.
+
+MetaOCaml supports an arbitrary number of later stages, letting us write not 
+only code generators but also generators of code generators, etc.
+
+\subsection{Compile-Time}
+N/A. Nothing will be bound while the generator is compiled along with the 
+driver program.
+
+\subsection{Generation Time}
+The ODE, range, step size, and algorithm are known at generation time. Since 
+these will not change, the IVP can be solved at this time.
+
+\subsection{Run-Time}
+The function that will return values for any input within the specified 
+interval will execute at run-time.
+
+\section{Connection Between Requirements and Design} \label{SecConnection}
+
+N/A. While the commonality analysis has clear implications, the requirements 
+are not explicitly recorded anywhere. 
+
+\section{Module Decomposition} \label{SecMD}
+
+Modules are decomposed according to the principle of ``information hiding''
+proposed by \citet{ParnasEtAl1984}. The \emph{Secrets} field in a module
+decomposition is a brief statement of the design decision hidden by the
+module. The \emph{Services} field specifies \emph{what} the module will do
+without documenting \emph{how} to do it. For each module, a suggestion for the
+implementing software is given under the \emph{Implemented By} title. If the
+entry is \emph{OS}, this means that the module is provided by the operating
+system or by standard programming language libraries.  Also indicate if the
+module will be implemented specifically for the software.
+
+Only the leaf modules in the
+hierarchy have to be implemented. If a dash (\emph{--}) is shown, this means
+that the module is not a leaf and will not have to be implemented. Whether or
+not this module is implemented depends on the programming language
+selected.
+
+\subsection{Hardware Hiding Modules (\mref{mHH})}
+
+\begin{description}
+\item[Secrets:]The data structure and algorithm used to implement the virtual
+  hardware.
+\item[Services:]Serves as a virtual hardware used by the rest of the
+  system. This module provides the interface between the hardware and the
+  software. So, the system can use it to display outputs or to accept inputs.
+\item[Implemented By:] OS
+\end{description}
+
+\subsection{Behaviour-Hiding Module}
+
+\begin{description}
+\item[Secrets:]The contents of the required behaviours.
+\item[Services:]Includes programs that provide externally visible behaviour of
+  the system as specified in the software requirements specification (SRS)
+  documents. This module serves as a communication layer between the
+  hardware-hiding module and the software decision module. The programs in this
+  module will need to change if there are changes in the SRS.
+\item[Implemented By:] --
+\end{description}
+
+\subsubsection{Input Format Module (\mref{mInput})}
+
+\begin{description}
+\item[Secrets:]The format and structure of the input data.
+\item[Services:]Converts the input data into the data structure used by the
+  input parameters module.
+\item[Implemented By:] [Your Program Name Here]
+\end{description}
+
+\subsubsection{Etc.}
+
+
+\subsection{Software Decision Module}
+
+\begin{description}
+\item[Secrets:] The design decision based on mathematical theorems, physical
+  facts, or programming considerations. The secrets of this module are
+  \emph{not} described in the SRS.
+\item[Services:] Includes data structure and algorithms used in the system that
+  do not provide direct interaction with the user. 
+  % Changes in these modules are more likely to be motivated by a desire to
+  % improve performance than by externally imposed changes.
+\item[Implemented By:] --
+\end{description}
+
+\subsubsection{Etc.}
+
+\section{Traceability Matrix} \label{SecTM}
+
+This section shows two traceability matrices: between the modules and the
+requirements and between the modules and the anticipated changes.
+
+% the table should use mref, the requirements should be named, use something
+% like fref
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{Req.} & \textbf{Modules}\\
+\midrule
+R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
+R2 & \mref{mInput}, \mref{mParams}\\
+R3 & \mref{mVerify}\\
+R4 & \mref{mOutput}, \mref{mControl}\\
+R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
+R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
+R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
+R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
+R9 & \mref{mVerifyOut}\\
+R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
+R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+\bottomrule
+\end{tabular}
+\caption{Trace Between Requirements and Modules}
+\label{TblRT}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{AC} & \textbf{Modules}\\
+\midrule
+\acref{acHardware} & \mref{mHH}\\
+\acref{acInput} & \mref{mInput}\\
+\acref{acParams} & \mref{mParams}\\
+\acref{acVerify} & \mref{mVerify}\\
+\acref{acOutput} & \mref{mOutput}\\
+\acref{acVerifyOut} & \mref{mVerifyOut}\\
+\acref{acODEs} & \mref{mODEs}\\
+\acref{acEnergy} & \mref{mEnergy}\\
+\acref{acControl} & \mref{mControl}\\
+\acref{acSeqDS} & \mref{mSeqDS}\\
+\acref{acSolver} & \mref{mSolver}\\
+\acref{acPlot} & \mref{mPlot}\\
+\bottomrule
+\end{tabular}
+\caption{Trace Between Anticipated Changes and Modules}
+\label{TblACT}
+\end{table}
+
+\section{Use Hierarchy Between Modules} \label{SecUse}
+
+In this section, the uses hierarchy between modules is
+provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B if
+correct execution of B may be necessary for A to complete the task described in
+its specification. That is, A {\em uses} B if there exist situations in which
+the correct functioning of A depends upon the availability of a correct
+implementation of B.  Figure \ref{FigUH} illustrates the use relation between
+the modules. It can be seen that the graph is a directed acyclic graph
+(DAG). Each level of the hierarchy offers a testable and usable subset of the
+system, and modules in the higher level of the hierarchy are essentially simpler
+because they use modules from the lower levels.
+
+\begin{figure}[H]
+\centering
+%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+\caption{Use hierarchy among modules}
+\label{FigUH}
+\end{figure}
+
+%\section*{References}
+
+\bibliographystyle {plainnat}
+\bibliography {MG}
+
+\end{document}
