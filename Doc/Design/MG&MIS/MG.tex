@@ -245,6 +245,7 @@ invokes the software.
 This section will demonstrate the difference between binding times via the 
 oft-used power example.
 
+Consider the following example for calculating any $x^n$:
 \begin{lstlisting}
 let square x = x * x
 let rec power n x =
@@ -254,7 +255,9 @@ let rec power n x =
 (* val power : int -> int -> int = <fun> *)
 \end{lstlisting}
 
-(The comment below the code shows the reply of the MetaOCaml toplevel.)
+(The comment below the code shows the reply of the MetaOCaml interactive 
+prompt, called the ``toplevel'', which contains the types of the power 
+function.)
 
 Suppose our program has to compute $x^7$ many times. We may define
 \begin{lstlisting}
@@ -337,9 +340,14 @@ The generator and its RK methods will be completely defined at this time.
 The ODE, range, step size, and algorithm are known at generation time. Since 
 these will not change, the IVP can be solved at this time.
 
+The type of the ODE is \lstinline|float -> float array -> float array|.
+
 \subsection{Run-Time}
 The function that will return values for any input within the specified 
 interval will execute at run-time.
+
+The type of the function that is returned should be (close to) 
+\lstinline|(float -> float) code|
 
 \section{Connection Between Requirements and Design} \label{SecConnection}
 
