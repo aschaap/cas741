@@ -243,7 +243,13 @@ invokes the software.
 \section{Binding Times}
 
 This section will demonstrate the difference between binding times via the 
-oft-used power example.
+oft-used power example. Rather than dividing the program into modules, a 
+decomposition by binding times is given. Such a decomposition is more 
+appropriate when multi-stage programming (MSP) is employed, something 
+\cite{Parnas1972a} was unaware of at that time, due to Multi-stage programming 
+being much newer. 
+%In terms of work assignments, perhaps the functions that make up the program 
+%could be assigned to different programmers.
 
 Consider the following example for calculating any $x^n$:
 \begin{lstlisting}
@@ -363,6 +369,8 @@ The type of the ODE is \lstinline|float -> float array -> float array|. The
 types for the range, step size and initial value are 
 \lstinline|(float * float)|, \lstinline|float|, and \lstinline|float array| 
 respectively.
+The type of the function that is returned should be (close to) 
+\lstinline|(float -> float) code|.
 
 \subsection{Run-Time}
 This is also part of the driver program's run-time, but from the point of view 
@@ -371,9 +379,8 @@ run.
 
 The function that will return values for any input within the specified 
 interval will execute at run-time.
-
-The type of the function that is returned should be (close to) 
-\lstinline|(float -> float) code|.
+As shown in the previous subsection, the input will be a \lstinline|float|, and 
+the return type is another \lstinline|float|.
 
 \section{Connection Between Requirements and Design} \label{SecConnection}
 
