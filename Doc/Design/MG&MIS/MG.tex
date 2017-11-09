@@ -90,7 +90,7 @@
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 November 3 & 1.0 & Initial Draft\\
-%Date 2 & 1.1 & Notes\\
+November 8 & 1.1 & Processed feedback, continued writing\\
 \bottomrule
 \end{tabularx}
 
@@ -98,9 +98,9 @@ November 3 & 1.0 & Initial Draft\\
 
 \tableofcontents
 
-\listoftables
-
-\listoffigures
+%\listoftables
+%
+%\listoffigures
 
 \newpage
 
@@ -259,16 +259,28 @@ let rec power n x =
 prompt, called the ``toplevel'', which contains the types of the power 
 function.)
 
-Suppose our program has to compute $x^7$ many times. We may define
+Assuming $x^7$ is a common operation, it would be useful to define
 \begin{lstlisting}
 let power7 x = power 7 x
 \end{lstlisting}
-to name and share the partial application.
+to give the \emph{partial application} a name and use it throughout the code. 
+Partial application means 
+that when giving a function some but not all the arguments it expects, one 
+creates a new function that only expects the remaining arguments. In the case 
+of \lstinline|power7|, the resulting function type will be 
+\lstinline|int -> int|.
 
-In MetaOCaml, we may also specialize the power function to a particular value 
-n, obtaining the code which will later receive x and compute $x^n$. We re-write 
-power n x annotating expressions as computed `now' (when n is known) or `later' 
-(when x is given).
+In MetaOCaml, one can also create a specialized instance of the power function 
+for a particular value of $n$. However, in the case of MetaOCaml, one can 
+generate code which accepts any $x$ and computes $x^n$. To do this, the
+\lstinline|power| function must be annotated such that computations which can 
+be performed at generation time are distinguished from those that must be 
+performed at run time. Because information such as $n$ is available at 
+right away and certain not to change in the future, any computation that 
+only depends on $n$ may be performed when the code is being generated. In 
+contrast, information such as $x$ is not known at generation time and subject 
+to change, so any computation that needs it will have to be postponed until the 
+generated code is actually run (when x is given).
 \begin{lstlisting}
 let rec spower n x =
   if n = 0 then .<1>.
@@ -276,46 +288,41 @@ let rec spower n x =
   else .<.~x * .~(spower (n-1) x)>.;;
 (* val spower : int -> int code -> int code = <fun> *)
 \end{lstlisting}
-The two annotations, or staging constructs, are brackets \lstinline|.< e >.| 
-and escape \lstinline|.~e| 
-. Brackets \lstinline|.< e >.| `quasi-quote' the expression e, annotating it as 
-computed 
-later. Escape \lstinline|.~e|, which must be used within brackets, tells that e 
-is computed 
-now but produces the result for later. That result, the code, is spliced-in 
-into the containing bracket. The inferred type of spower is different. The 
-result is no longer an int, but int code -- the code of expressions that 
-compute an int. The type of spower spells out which argument is received now, 
-and which later: the future-stage argument has the code type. To specialize 
-spower to 7, we define
+Two annotations, or staging constructs, specific to MetaOCaml appear in the 
+code above. These are brackets \lstinline|.< e >.| and escape \lstinline|.~e|. 
+Brackets \lstinline|.< e >.| `quasi-quote' the expression e, annotating it as 
+computed later. Escape \lstinline|.~e|, which must be used within brackets, 
+tells that e is computed now but produces the result for later. That result, 
+the code, is inserted (spliced-in) into the containing bracket. The inferred 
+type of \lstinline|spower| is different. The 
+result is no longer an \lstinline|int|, but \lstinline|int code| -- the code of 
+expressions that compute an \lstinline|int|. The type of \lstinline|spower| 
+spells out which argument is received now, and which later: the future-stage 
+argument has the \lstinline|code| type. To specialize \lstinline|spower| to 7, 
+one can define
 \begin{lstlisting}
 let spower7_code = .<fun x -> .~(spower 7 .<x>.)>.;;
 (*
 val spower7_code : (int -> int) code = .<
-  fun x_1 ->
-    (x_1 *
-      (((* cross-stage persistent value (id: square) *))
-        (x_1 * (((* cross-stage persistent value (id: square) *)) (x_1 * 1)))))
-  >.
+  fun x_1  -> x_1 * ((* CSP square *) (x_1 * ((* CSP square *) (x_1 * 
+    1))))>.
 *)
 \end{lstlisting}
-and obtain the code of a function that will receive x and return $x^7$. Code, 
-even of functions, can be printed, which is what MetaOCaml toplevel just did. 
-The print-out contains so-called cross-stage persistent values, or CSP, which 
-`quote' present-stage values such as square to be used later. One may think of 
-CSP as references to `external libraries' -- only in our case the program acts 
-as a library for the code it generates. If square were defined in a separate 
-file, say, sq.ml, then its occurrence in \lstinline|spower7_code| would have 
-been printed 
-simply as Sq.square.
+and obtain the code of a function that expects any $x$ and returns $x^7$. Code, 
+even of functions, can be printed, which is what MetaOCaml toplevel 
+(interactive prompt) just did. The print-out contains so-called cross-stage 
+persistent values, or CSP, which `quote' present-stage values such as square to 
+be used later. One may think of CSP as references to `external libraries' -- 
+only in our case the program acts as a library for the code it generates. If 
+square were defined in a separate file such as \texttt{sq.ml}, then its 
+occurrence in \lstinline|spower7_code| would have been printed as 
+\lstinline|Sq.square|.
 
-To use thus specialized $x^7$ now, in our code, we should `run' 
-\lstinline|spower7_code|, 
-applying the function \lstinline|Runcode.run : 'a code -> 'a|. The function 
-compiles the 
-code and links it back to our program. 
-%For historical reasons, Runcode.run is aliased to the prefix operation (!.):
-
+To use the specialized $x^7$ now, in our code, we should `run' 
+\lstinline|spower7_code|, applying the function 
+\lstinline|Runcode.run : 'a code -> 'a|. The function compiles the code and 
+links it back to our program. Runcode.run is aliased to the prefix operation 
+(!.):
 \begin{lstlisting}
 open Runcode
 let spower7 = !. spower7_code
@@ -330,24 +337,43 @@ seen from \lstinline|spower7_code|). All operations on n have been done when
 the \lstinline|spower7_code| was computed, producing the straight-line code 
 \lstinline|spower7| that only multiplies $x$.
 
-MetaOCaml supports an arbitrary number of later stages, letting us write not 
-only code generators but also generators of code generators, etc.
+(MetaOCaml supports an arbitrary number of later stages, letting one write not 
+only code generators but also generators of code generators, etc.)
+
 
 \subsection{Compile-Time}
-The generator and its RK methods will be completely defined at this time.
+As the name implies, this is when the code is compiled. Code generation could 
+occur at this time, but this will not happen for the RK generator.
+
+The generator and its RK methods will be completely defined at this time. There 
+are no inputs to it at this time, because it is effectively a library.
 
 \subsection{Generation Time}
-The ODE, range, step size, and algorithm are known at generation time. Since 
-these will not change, the IVP can be solved at this time.
+This is part of the run-time of the driver program, but from the point of view 
+of this library, separating the moment the code for a particular IVP is 
+generated and the moment(s) it is executed is useful.
 
-The type of the ODE is \lstinline|float -> float array -> float array|.
+The ODE, interval, step size, desired RK method and initial value are known at 
+generation time. 
+Since these will not change when looking for solutions given a particular point 
+on the interval for which the algorithm is solving, the IVP can be solved at 
+this time.
+
+The type of the ODE is \lstinline|float -> float array -> float array|. The 
+types for the range, step size and initial value are 
+\lstinline|(float * float)|, \lstinline|float|, and \lstinline|float array| 
+respectively.
 
 \subsection{Run-Time}
+This is also part of the driver program's run-time, but from the point of view 
+of the RK generator, this is (one of) the moment(s) when the generated code is 
+run.
+
 The function that will return values for any input within the specified 
 interval will execute at run-time.
 
 The type of the function that is returned should be (close to) 
-\lstinline|(float -> float) code|
+\lstinline|(float -> float) code|.
 
 \section{Connection Between Requirements and Design} \label{SecConnection}
 
@@ -355,146 +381,156 @@ N/A. While the commonality analysis has clear implications, the requirements
 are not explicitly recorded anywhere. 
 
 \section{Module Decomposition} \label{SecMD}
-
-Modules are decomposed according to the principle of ``information hiding''
-proposed by \citet{ParnasEtAl1984}. The \emph{Secrets} field in a module
-decomposition is a brief statement of the design decision hidden by the
-module. The \emph{Services} field specifies \emph{what} the module will do
-without documenting \emph{how} to do it. For each module, a suggestion for the
-implementing software is given under the \emph{Implemented By} title. If the
-entry is \emph{OS}, this means that the module is provided by the operating
-system or by standard programming language libraries.  Also indicate if the
-module will be implemented specifically for the software.
-
-Only the leaf modules in the
-hierarchy have to be implemented. If a dash (\emph{--}) is shown, this means
-that the module is not a leaf and will not have to be implemented. Whether or
-not this module is implemented depends on the programming language
-selected.
-
-\subsection{Hardware Hiding Modules (\mref{mHH})}
-
-\begin{description}
-\item[Secrets:]The data structure and algorithm used to implement the virtual
-  hardware.
-\item[Services:]Serves as a virtual hardware used by the rest of the
-  system. This module provides the interface between the hardware and the
-  software. So, the system can use it to display outputs or to accept inputs.
-\item[Implemented By:] OS
-\end{description}
-
-\subsection{Behaviour-Hiding Module}
-
-\begin{description}
-\item[Secrets:]The contents of the required behaviours.
-\item[Services:]Includes programs that provide externally visible behaviour of
-  the system as specified in the software requirements specification (SRS)
-  documents. This module serves as a communication layer between the
-  hardware-hiding module and the software decision module. The programs in this
-  module will need to change if there are changes in the SRS.
-\item[Implemented By:] --
-\end{description}
-
-\subsubsection{Input Format Module (\mref{mInput})}
-
-\begin{description}
-\item[Secrets:]The format and structure of the input data.
-\item[Services:]Converts the input data into the data structure used by the
-  input parameters module.
-\item[Implemented By:] [Your Program Name Here]
-\end{description}
-
-\subsubsection{Etc.}
-
-
-\subsection{Software Decision Module}
-
-\begin{description}
-\item[Secrets:] The design decision based on mathematical theorems, physical
-  facts, or programming considerations. The secrets of this module are
-  \emph{not} described in the SRS.
-\item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user. 
-  % Changes in these modules are more likely to be motivated by a desire to
-  % improve performance than by externally imposed changes.
-\item[Implemented By:] --
-\end{description}
-
-\subsubsection{Etc.}
-
+N/A. The program is broken down by binding times, rather than modules, due to 
+the use of multi-stage programming via MetaOCaml.
+%
+%Modules are decomposed according to the principle of ``information hiding''
+%proposed by \citet{ParnasEtAl1984}. The \emph{Secrets} field in a module
+%decomposition is a brief statement of the design decision hidden by the
+%module. The \emph{Services} field specifies \emph{what} the module will do
+%without documenting \emph{how} to do it. For each module, a suggestion for the
+%implementing software is given under the \emph{Implemented By} title. If the
+%entry is \emph{OS}, this means that the module is provided by the operating
+%system or by standard programming language libraries.  Also indicate if the
+%module will be implemented specifically for the software.
+%
+%Only the leaf modules in the
+%hierarchy have to be implemented. If a dash (\emph{--}) is shown, this means
+%that the module is not a leaf and will not have to be implemented. Whether or
+%not this module is implemented depends on the programming language
+%selected.
+%
+%\subsection{Hardware Hiding Modules (\mref{mHH})}
+%
+%\begin{description}
+%\item[Secrets:]The data structure and algorithm used to implement the virtual
+%  hardware.
+%\item[Services:]Serves as a virtual hardware used by the rest of the
+%  system. This module provides the interface between the hardware and the
+%  software. So, the system can use it to display outputs or to accept inputs.
+%\item[Implemented By:] OS
+%\end{description}
+%
+%\subsection{Behaviour-Hiding Module}
+%
+%\begin{description}
+%\item[Secrets:]The contents of the required behaviours.
+%\item[Services:]Includes programs that provide externally visible behaviour of
+%  the system as specified in the software requirements specification (SRS)
+%  documents. This module serves as a communication layer between the
+%  hardware-hiding module and the software decision module. The programs in this
+%  module will need to change if there are changes in the SRS.
+%\item[Implemented By:] --
+%\end{description}
+%
+%\subsubsection{Input Format Module (\mref{mInput})}
+%
+%\begin{description}
+%\item[Secrets:]The format and structure of the input data.
+%\item[Services:]Converts the input data into the data structure used by the
+%  input parameters module.
+%\item[Implemented By:] [Your Program Name Here]
+%\end{description}
+%
+%\subsubsection{Etc.}
+%
+%
+%\subsection{Software Decision Module}
+%
+%\begin{description}
+%\item[Secrets:] The design decision based on mathematical theorems, physical
+%  facts, or programming considerations. The secrets of this module are
+%  \emph{not} described in the SRS.
+%\item[Services:] Includes data structure and algorithms used in the system that
+%  do not provide direct interaction with the user. 
+%  % Changes in these modules are more likely to be motivated by a desire to
+%  % improve performance than by externally imposed changes.
+%\item[Implemented By:] --
+%\end{description}
+%
+%\subsubsection{Etc.}
+%
 \section{Traceability Matrix} \label{SecTM}
-
-This section shows two traceability matrices: between the modules and the
-requirements and between the modules and the anticipated changes.
-
-% the table should use mref, the requirements should be named, use something
-% like fref
-\begin{table}[H]
-\centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
-\toprule
-\textbf{Req.} & \textbf{Modules}\\
-\midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
-\bottomrule
-\end{tabular}
-\caption{Trace Between Requirements and Modules}
-\label{TblRT}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
-\toprule
-\textbf{AC} & \textbf{Modules}\\
-\midrule
-\acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
-\acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
-\bottomrule
-\end{tabular}
-\caption{Trace Between Anticipated Changes and Modules}
-\label{TblACT}
-\end{table}
-
+N/A.
+%
+%This section shows two traceability matrices: between the modules and the
+%requirements and between the modules and the anticipated changes.
+%
+%% the table should use mref, the requirements should be named, use something
+%% like fref
+%\begin{table}[H]
+%\centering
+%\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+%\toprule
+%\textbf{Req.} & \textbf{Modules}\\
+%\midrule
+%R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
+%R2 & \mref{mInput}, \mref{mParams}\\
+%R3 & \mref{mVerify}\\
+%R4 & \mref{mOutput}, \mref{mControl}\\
+%R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, 
+%\mref{mSolver}, \mref{mPlot}\\
+%R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, 
+%\mref{mSolver}, \mref{mPlot}\\
+%R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, 
+%\mref{mPlot}\\
+%R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, 
+%\mref{mPlot}\\
+%R9 & \mref{mVerifyOut}\\
+%R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
+%R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+%\bottomrule
+%\end{tabular}
+%\caption{Trace Between Requirements and Modules}
+%\label{TblRT}
+%\end{table}
+%
+%\begin{table}[H]
+%\centering
+%\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+%\toprule
+%\textbf{AC} & \textbf{Modules}\\
+%\midrule
+%\acref{acHardware} & \mref{mHH}\\
+%\acref{acInput} & \mref{mInput}\\
+%\acref{acParams} & \mref{mParams}\\
+%\acref{acVerify} & \mref{mVerify}\\
+%\acref{acOutput} & \mref{mOutput}\\
+%\acref{acVerifyOut} & \mref{mVerifyOut}\\
+%\acref{acODEs} & \mref{mODEs}\\
+%\acref{acEnergy} & \mref{mEnergy}\\
+%\acref{acControl} & \mref{mControl}\\
+%\acref{acSeqDS} & \mref{mSeqDS}\\
+%\acref{acSolver} & \mref{mSolver}\\
+%\acref{acPlot} & \mref{mPlot}\\
+%\bottomrule
+%\end{tabular}
+%\caption{Trace Between Anticipated Changes and Modules}
+%\label{TblACT}
+%\end{table}
+%
 \section{Use Hierarchy Between Modules} \label{SecUse}
-
-In this section, the uses hierarchy between modules is
-provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B if
-correct execution of B may be necessary for A to complete the task described in
-its specification. That is, A {\em uses} B if there exist situations in which
-the correct functioning of A depends upon the availability of a correct
-implementation of B.  Figure \ref{FigUH} illustrates the use relation between
-the modules. It can be seen that the graph is a directed acyclic graph
-(DAG). Each level of the hierarchy offers a testable and usable subset of the
-system, and modules in the higher level of the hierarchy are essentially simpler
-because they use modules from the lower levels.
-
-\begin{figure}[H]
-\centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
-\caption{Use hierarchy among modules}
-\label{FigUH}
-\end{figure}
+N/A.
+%
+%In this section, the uses hierarchy between modules is
+%provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B 
+%if
+%correct execution of B may be necessary for A to complete the task described in
+%its specification. That is, A {\em uses} B if there exist situations in which
+%the correct functioning of A depends upon the availability of a correct
+%implementation of B.  Figure \ref{FigUH} illustrates the use relation between
+%the modules. It can be seen that the graph is a directed acyclic graph
+%(DAG). Each level of the hierarchy offers a testable and usable subset of the
+%system, and modules in the higher level of the hierarchy are essentially 
+%simpler
+%because they use modules from the lower levels.
+%
+%\begin{figure}[H]
+%\centering
+%%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+%\caption{Use hierarchy among modules}
+%\label{FigUH}
+%\end{figure}
 
 %\section*{References}
 
