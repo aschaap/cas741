@@ -59,6 +59,8 @@ October 25 & 1.1 & Processed feedback and completed report\\
 
 \listoffigures
 
+\wss{If you don't have tables or figures, you can comment out these headings.}
+
 \newpage
 
 \pagenumbering{arabic}
@@ -84,6 +86,10 @@ should also be measured. The implementation could be compared to an unstaged
 version of the same code (plain OCaml rather than MetaOCaml; no generation). 
 Alternatively, a comparison against Matlab would give an indication of 
 performance compared to the competition.
+
+\wss{An explicit web-link to your GitHub repo would be nice.}
+
+\wss{Reference your SRS document}
 
 \subsection{Overview of Document}
 The structure of this documents is based on \cite{Smith2006}. The next section 
@@ -150,6 +156,12 @@ more readable or improving the results in terms of accuracy.
 While readability isn't strictly a requirement, simple (and therefore more 
 readable) code is often a decent indicator of correctness in metaprogramming.
 
+\wss{In your case having a build infrastructure where you can do a diff between
+  the generated code and some ``golden'' version of the generated code, would be
+  nice.  This won't tell you if your generated code is correct, but it will tell
+  you if you generator starts creating different code.  This either means you
+  have introduced an error, or you have a new ``golden'' version to put in
+  place.  This is the approach used for ggk and for Drasil.}
 
 \section{System Test Description}
 
@@ -163,7 +175,9 @@ The intent is to test using problems with known solutions to get around oracle
 problem.
 Results of other ODE solvers such as Matlab or Octave can be used for 
 comparison purposes in case of unknown solutions.
-Currently, all tests have known solutions.
+Currently, all tests have known solutions.  \wss{I would like to see some tests
+  where you compare to Matlab or Octave as the pseudo oracle.  This will provide
+  a greater variety of tests.}
 
 It is assumed that these tests test both the generator and the generated code. 
 The inputs therefore are for the generator, but inputs are also needed for the 
@@ -190,7 +204,8 @@ Initial State: N/A
 Input (generator): $x'(t) = 5x - 3 \quad x(2) = 1, \quad 2 \leq t \leq 3, \quad 
 h = 0.1$
 
-Input (generated): 2, 3, 0, -1024, 2.2, 2.5, 23
+Input (generated): 2, 3, 0, -1024, 2.2, 2.5, 23 \wss{What are these numbers?
+  The final value of $t$, or something else?}
 					
 Output (RK4): values that match\footnote{Taking potential floating-point 
 rounding 
@@ -201,6 +216,13 @@ Output (RK2): similar to RK4, but with some margin of error that is within
 $O(h^3)$.
 					
 How test will be performed: via OUnit
+
+\wss{Rather than make the vague statement that you are taking floating point
+  errors into account, I think your goal should be to summarize the relative
+  error for each test case.  You can make a table of errors.  Rather than
+  specify a priori what the error should be, the job of your testing is to
+  simply describe the results.  Judging the acceptability of the errors is
+  something that can be done by potential users of the software.}
 					
 \item{High-order-ODE\footnote{Adapted from:
 \url{http://mathinsight.org/ordinary_differential_equation_introduction_examples}}\\}
@@ -210,7 +232,9 @@ Type: Functional, Dynamic
 Initial State: N/A
 
 Input (generator): $x'(t) = 7x^2x^3 \quad x(2) = 3, \quad 2 \leq t \leq 4, 
-\quad h = 0.1$
+\quad h = 0.1$ \wss{Why not just write $x'(t) = 7x^5$? (product rule for
+  exponents).  Is there supposed to be a $t$ on the right hand side of the
+  equation?  Looking into this further, I believe you mean $7 x^2 t^3$.}
 
 Input (generator): 2, 3, 0, 2.5, -89, 8192
 
@@ -258,9 +282,13 @@ Test via diffing the output of the generator with previous results and decide
 whether any change is desired or not
 
 Inspect code to see whether it matches the algorithm; aim to write code that 
-reflects it.
+reflects it.  \wss{I agree with this.  You should mention it under non-testing
+  based verification.  You should also give more detail on how it is going to be
+  done, who is going to do it, etc.  Ideally, there will be a specific approach
+  for the verification, including a pointer to the specific algorithm that the
+  final code should resemble.}
 
-...
+... \wss{Does the ... mean something?  Are more details coming?}
 
 \subsection{Tests for Nonfunctional Requirements}
 The implied nonfunctional requirement to be tested is performance. There is no 
@@ -302,6 +330,16 @@ Output: Similar output but with the expectation that Matlab may be more
 accurate. Matlab will also likely be faster (excluding start-up time).
 					
 How test will be performed: via Make
+
+\wss{More detail needs to be provided.  How are the results going to be
+  summarized?  What equation is going to be used to compare the generated code
+  to the ``competition''?  Percent relative change seems like a good summary
+  statistic to me.  Will there be a bar graph showing the results, or some other
+  approach?}
+
+\wss{For many of your tests they might be too simple to show much of a
+  difference in performance.  You will need a long integration time for
+  differences to be observable.}
 
 %\item{Comparison against Matlab\\}
 %
