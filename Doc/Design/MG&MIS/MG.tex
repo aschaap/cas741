@@ -108,6 +108,9 @@ November 8 & 1.1 & Processed feedback, continued writing\\
 
 \section{Introduction}
 
+\wss{Reusing this introduction does not make any sense for your project.  Please
+  replace with an introduction suitable for your design document.}
+
 Decomposing a system into modules is a commonly accepted approach to developing
 software.  A module is a work assignment for a programmer or programming
 team~\citep{ParnasEtAl1984}.  We advocate a decomposition
@@ -146,14 +149,14 @@ potential readers of this document are as follows:
   decomposition, and flexibility of the design.
 \end{itemize}
 
-The rest of the document is organized as follows. Section
-\ref{SecChange} lists the anticipated and unlikely changes of the software
-requirements. Section \ref{SecMH} summarizes the module decomposition that
+The rest of the document is organized as follows. Section \ref{SecChange} lists
+the anticipated and unlikely changes of the software requirements. Section
+\ref{SecMH} \wss{missing this section} summarizes the module decomposition that
 was constructed according to the likely changes. Section \ref{SecConnection}
 specifies the connections between the software requirements and the
 modules. Section \ref{SecMD} gives a detailed description of the
-modules. Section \ref{SecTM} includes two traceability matrices. One checks
-the completeness of the design against the requirements provided in the SRS. The
+modules. Section \ref{SecTM} includes two traceability matrices. One checks the
+completeness of the design against the requirements provided in the SRS. The
 other shows the relation between anticipated changes and the modules. Section
 \ref{SecUse} describes the use relation between modules.
 
@@ -163,6 +166,9 @@ This section lists possible changes to the system. According to the likeliness
 of the change, the possible changes are classified into two
 categories. Anticipated changes are listed in Section \ref{SecAchange}, and
 unlikely changes are listed in Section \ref{SecUchange}.
+
+\wss{These ideas still apply, but rather than separate sections, maybe you could
+  just summarize this information in your revised introduction.}
 
 \subsection{Anticipated Changes} \label{SecAchange}
 
@@ -346,6 +352,8 @@ the \lstinline|spower7_code| was computed, producing the straight-line code
 (MetaOCaml supports an arbitrary number of later stages, letting one write not 
 only code generators but also generators of code generators, etc.)
 
+\wss{I like the above summary.  I would like you to use the same systematic
+  steps for presenting your code.}
 
 \subsection{Compile-Time}
 As the name implies, this is when the code is compiled. Code generation could 
