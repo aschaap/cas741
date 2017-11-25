@@ -247,3 +247,6 @@ TSWLatexianTemp*
 
 # expex forward references with \gathertags
 *-tags.tex
+
+## Addressing issue #34
+*.DS_Store
