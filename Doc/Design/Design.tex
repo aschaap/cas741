@@ -60,7 +60,7 @@
   title=\lstname                   % show the filename of files included with 
   %\lstinputlisting; also try caption instead of title
 }
-\input{../../Comments}
+\input{../Comments}
 
 \newcounter{acnum}
 \newcommand{\actheacnum}{AC\theacnum}
@@ -118,22 +118,21 @@ based on the principle of information hiding~\citep{Parnas1972a}.  This
 principle supports design for change, because the ``secrets'' that each module
 hides represent likely future changes.  Design for change is valuable in SC,
 where modifications are frequent, especially during initial development as the
-solution space is explored.  
+solution space is explored. However, for this particular project, a 
+decomposition into modules is not really useful because it is essentially a 
+single module to begin with.
 
-Our design follows the rules laid out by \citet{ParnasEtAl1984}, as follows:
-\begin{itemize}
-\item System details that are likely to change independently should be the
-  secrets of separate modules.
-\item Each data structure is used in only one module.
-\item Any other program that requires information stored in a module's data
-  structures must obtain it by calling access programs belonging to that module.
-\end{itemize}
+For multi-stage programming (MSP), there is another dimension in which 
+decomposition can occur: binding times. While traditional software gives the 
+option of binding variables to values at either compile time or runtime, MSP 
+introduces the concept of staging, or delaying execution of code annotated as 
+such. This gives the programmer more possible binding times. Delaying execution 
+allows one to combine fragments of code into larger ones, which will be called 
+generation time for clarity. This occurs after compilation time. Runtime is the 
+moment the generated code is executed. Generators-in-generators are not 
+considered because they are overkill for the problem of solving ODEs. 
 
-After completing the first stage of the design, the Software Requirements
-Specification (SRS), the Module Guide (MG) is developed~\citep{ParnasEtAl1984}. The MG
-specifies the modular structure of the system and is intended to allow both
-designers and maintainers to easily identify the parts of the software.  The
-potential readers of this document are as follows:
+The potential readers of this document are as follows:
 
 \begin{itemize}
 \item New project members: This document can be a guide for a new project member
@@ -149,16 +148,17 @@ potential readers of this document are as follows:
   decomposition, and flexibility of the design.
 \end{itemize}
 
-The rest of the document is organized as follows. Section \ref{SecChange} lists
-the anticipated and unlikely changes of the software requirements. Section
-\ref{SecMH} \wss{missing this section} summarizes the module decomposition that
-was constructed according to the likely changes. Section \ref{SecConnection}
+The rest of the document is organized as follows. Section~\ref{SecChange} lists
+the anticipated and unlikely changes of the software requirements. 
+%Section \ref{SecMH} \wss{missing this section} summarizes the module 
+%decomposition that was constructed according to the likely changes. 
+Section~\ref{SecConnection}
 specifies the connections between the software requirements and the
-modules. Section \ref{SecMD} gives a detailed description of the
-modules. Section \ref{SecTM} includes two traceability matrices. One checks the
+modules. Section~\ref{SecMD} gives a detailed description of the
+modules. Section~\ref{SecTM} includes two traceability matrices. One checks the
 completeness of the design against the requirements provided in the SRS. The
-other shows the relation between anticipated changes and the modules. Section
-\ref{SecUse} describes the use relation between modules.
+other shows the relation between anticipated changes and the modules. 
+Section~\ref{SecUse} describes the use relation between modules.
 
 \section{Anticipated and Unlikely Changes} \label{SecChange}
 
@@ -550,6 +550,6 @@ N/A.
 %\section*{References}
 
 \bibliographystyle {plainnat}
-\bibliography {MG}
+\bibliography {Design}
 
 \end{document}
