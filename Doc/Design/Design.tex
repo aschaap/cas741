@@ -96,6 +96,11 @@ November 8 & 1.1 & Processed feedback, continued writing\\
 
 \newpage
 
+\section{Symbols, Abbreviations \& Acronyms}
+See SRS at \url{https://github.com/aschaap/cas741}.
+
+\newpage
+
 \tableofcontents
 
 %\listoftables
@@ -132,6 +137,29 @@ generation time for clarity. This occurs after compilation time. Runtime is the
 moment the generated code is executed. Generators-in-generators are not 
 considered because they are overkill for the problem of solving ODEs. 
 
+An analysis of anticipated and unlikely changes is still relevant; however, 
+this will not translate to modules. It will affect the individual module 
+decomposition (into functions), which merits consideration on its 
+own\cite{VanHilst:1996:DCD:250707.239109}. Therefore, the following anticipated 
+changes 
+have been identified:
+\begin{description}
+  \item[\refstepcounter{acnum} \actheacnum \label{acAlgorithm}:] The algorithm 
+  used to solve the given IVP.
+  \item[\refstepcounter{acnum} \actheacnum \label{acImplementation}:] The 
+  implementation of the algorithms used to solve the IVP.
+  \item [\refstepcounter{acnum} \actheacnum \label{acInterpolation}:] Adding 
+  interpolation of the solution provided by the specified algorithm.
+\end{description}
+
+As well as the following unlikely changes:
+\begin{description}
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucOutput}:] Output format 
+  (generated code).
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucInput}:] The way the driver 
+  program invokes the software.
+\end{description}
+
 The potential readers of this document are as follows:
 
 \begin{itemize}
@@ -160,48 +188,51 @@ completeness of the design against the requirements provided in the SRS. The
 other shows the relation between anticipated changes and the modules. 
 Section~\ref{SecUse} describes the use relation between modules.
 
-\section{Anticipated and Unlikely Changes} \label{SecChange}
-
-This section lists possible changes to the system. According to the likeliness
-of the change, the possible changes are classified into two
-categories. Anticipated changes are listed in Section \ref{SecAchange}, and
-unlikely changes are listed in Section \ref{SecUchange}.
-
-\wss{These ideas still apply, but rather than separate sections, maybe you could
-  just summarize this information in your revised introduction.}
-
-\subsection{Anticipated Changes} \label{SecAchange}
-
-Anticipated changes are the source of the information that is to be hidden
-inside the modules. Ideally, changing one of the anticipated changes will only
-require changing the one module that hides the associated decision. The approach
-adapted here is called design for
-change.
-
-\begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acAlgorithm}:] The algorithm 
-used to solve the given IVP.
-\item[\refstepcounter{acnum} \actheacnum \label{acImplementation}:] The 
-implementation of the algorithms used to solve the IVP.
-\item ...
-\end{description}
-
-\subsection{Unlikely Changes} \label{SecUchange}
-
-The module design should be as general as possible. However, a general system is
-more complex. Sometimes this complexity is not necessary. Fixing some design
-decisions at the system architecture stage can simplify the software design. If
-these decision should later need to be changed, then many parts of the design
-will potentially need to be modified. Hence, it is not intended that these
-decisions will be changed.
-
-\begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucOutput}:] Output format 
-(generated code).
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucInput}:] The way the driver 
-invokes the software.
-\item ...
-\end{description}
+%\section{Anticipated and Unlikely Changes} \label{SecChange}
+%
+%This section lists possible changes to the system. According to the likeliness
+%of the change, the possible changes are classified into two
+%categories. Anticipated changes are listed in Section \ref{SecAchange}, and
+%unlikely changes are listed in Section \ref{SecUchange}.
+%
+%\wss{These ideas still apply, but rather than separate sections, maybe you 
+%could
+%  just summarize this information in your revised introduction.}
+%
+%\subsection{Anticipated Changes} \label{SecAchange}
+%
+%Anticipated changes are the source of the information that is to be hidden
+%inside the modules. Ideally, changing one of the anticipated changes will only
+%require changing the one module that hides the associated decision. The 
+%approach
+%adapted here is called design for
+%change.
+%
+%\begin{description}
+%\item[\refstepcounter{acnum} \actheacnum \label{acAlgorithm}:] The algorithm 
+%used to solve the given IVP.
+%\item[\refstepcounter{acnum} \actheacnum \label{acImplementation}:] The 
+%implementation of the algorithms used to solve the IVP.
+%\item ...
+%\end{description}
+%
+%\subsection{Unlikely Changes} \label{SecUchange}
+%
+%The module design should be as general as possible. However, a general system 
+%is
+%more complex. Sometimes this complexity is not necessary. Fixing some design
+%decisions at the system architecture stage can simplify the software design. If
+%these decision should later need to be changed, then many parts of the design
+%will potentially need to be modified. Hence, it is not intended that these
+%decisions will be changed.
+%
+%\begin{description}
+%\item[\refstepcounter{ucnum} \uctheucnum \label{ucOutput}:] Output format 
+%(generated code).
+%\item[\refstepcounter{ucnum} \uctheucnum \label{ucInput}:] The way the driver 
+%invokes the software.
+%\item ...
+%\end{description}
 
 %\section{Module Hierarchy} \label{SecMH}
 %
@@ -257,7 +288,8 @@ being much newer.
 %In terms of work assignments, perhaps the functions that make up the program 
 %could be assigned to different programmers.
 
-Consider the following example for calculating any $x^n$:
+Consider the following example\footnote{Adapted from 
+\url{http://okmij.org/ftp/ML/MetaOCaml.html}} for calculating any $x^n$:
 \begin{lstlisting}
 let square x = x * x
 let rec power n x =
