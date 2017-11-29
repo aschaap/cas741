@@ -144,9 +144,9 @@ considered because they are overkill for the problem of solving ODEs.
 An analysis of anticipated and unlikely changes is still relevant; however, 
 this will not translate to modules. It will affect the individual module 
 decomposition (into functions), which merits consideration on its 
-own\cite{VanHilst:1996:DCD:250707.239109}. Therefore, the following anticipated 
-changes 
-have been identified:
+own, as illustrated by \cite{VanHilst:1996:DCD:250707.239109}. Decomposing by 
+binding time is the way this single-module program is decomposed. Therefore, 
+the following anticipated changes have been identified:
 \begin{description}
   \item[\refstepcounter{acnum} \actheacnum \label{acAlgorithm}:] The algorithm 
   used to solve the given IVP.
@@ -478,6 +478,8 @@ The function that will return values for any input within the specified
 interval will execute at run-time.
 As shown in the previous subsection, the input will be a \lstinline|float|, and 
 the return type is another \lstinline|float|.
+
+
 
 \section{Connection Between Requirements and Design} \label{SecConnection}
 
