@@ -79,8 +79,8 @@
 
 \begin{document}
 
-\title{Module Guide: Project Title} 
-\author{Author Name}
+\title{Design: RKF45 Generator} 
+%\author{Alexander Schaap}
 \date{\today}
 
 \maketitle
@@ -420,13 +420,13 @@ Syntax of the access programs available after this binding time.
   \end{tabular}
 \end{center}
 For the sake of clarity and easier reference from the semantics portion, the 
-input types have been grouped with parentheses and identifiers (the symbols 
-preceding the colons inside the parenthesis) to match 
-most of the data definitions from the SRS. Note that $n$ is 
+identifiers match most of the data definitions from the SRS. Note that $n$ is 
 the exception; this is the number of knots (to divide the interval into to 
 determine the stepsize $h$ from the SRS).
+
 \subsubsection{Semantics}
 Semantics of the access programs available after this binding time.
+
 \paragraph{State Variables}
 
 none
@@ -436,13 +436,13 @@ none
 \noindent odesolve():
 \begin{itemize}
   \item transition: N/A
-  \item output: $(\mathbb{N} \times \mathbb{R} \rightarrow \mathbb{R})$ 
+  \item output: $ out := (\mathbb{N} \times \mathbb{R} \rightarrow \mathbb{R})$ 
   \texttt{code}
   \begin{itemize}
     \item Code that contains a function that will provide a solution for points 
-    such that point $p = t_0 + m \times h$
+    such that point $p = t_0 + m \times h$ based on precomputed knowledge embedded in it by the generator.
   \end{itemize}
-  \item exception: $n < 2 \Rightarrow$ LESS\_THAN\_2\_KNOTS
+  \item exception: $exc := (n < 2 \Rightarrow$ LESS\_THAN\_2\_KNOTS)
   \begin{itemize}
     \item The number of knots should be at least two, which would correspond to 
     one at each end of the interval, and the step size $h$ being equal to the 
@@ -478,7 +478,36 @@ The function that will return values for any input within the specified
 interval will execute at run-time.
 As shown in the previous subsection, the input will be a \lstinline|float|, and 
 the return type is another \lstinline|float|.
+\subsection{Syntax}
 
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+	\begin{tabular}{p{5cm} p{3cm} p{3cm} p{2cm}}
+		\hline
+		\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+		\hline
+		N/A - anonymous function & i : $\mathbb{N}, t : \mathbb{R}$ & $ x_i(t) : \mathbb{R}$ & - \\
+		\hline
+	\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+None.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent anonymous function():
+\begin{itemize}
+	\item transition: none
+	\item output: $out := x_{i}(t) \mathbb{R}$
+	\begin{itemize}
+	\item A numerical value for the particular point and ODE given as input
+	\end{itemize}
+	\item exception: $exc := (i < t_0 | i > t_N \Rightarrow$ NOT\_IN\_RANGE)
+\end{itemize}
 
 
 \section{Connection Between Requirements and Design} \label{SecConnection}
