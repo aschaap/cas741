@@ -65,6 +65,10 @@
 }
 \input{../Comments}
 
+\usepackage{xspace}
+
+\newcommand{\progname}{the RKF45 Generator\xspace}
+
 \newcounter{acnum}
 \newcommand{\actheacnum}{AC\theacnum}
 \newcommand{\acref}[1]{AC\ref{#1}}
@@ -94,6 +98,7 @@
 \midrule
 November 3 & 1.0 & Initial Draft\\
 November 8 & 1.1 & Processed feedback, continued writing\\
+November 29 & 1.2 & Processed feedback, added interface specifications\\
 \bottomrule
 \end{tabularx}
 
@@ -191,6 +196,49 @@ modules. Section~\ref{SecTM} includes two traceability matrices. One checks the
 completeness of the design against the requirements provided in the SRS. The
 other shows the relation between anticipated changes and the modules. 
 Section~\ref{SecUse} describes the use relation between modules.
+
+\section{Notation}
+
+
+The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
+with the addition that template modules have been adapted from
+\cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
+\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
+multiple assignment statement and conditional rules follow the form $(c_1
+\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
+
+The following table summarizes the primitive data types used by \progname. 
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \noindent 
+  \begin{tabular}{l l p{7.5cm}} 
+    \toprule 
+    \textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
+    \midrule
+    character & char & a single symbol or digit\\
+    natural number & $\mathbb{N}$ & a number without a fractional component in 
+    [1, $\infty$) \\
+    natural number & $\mathbb{N}^0$ & a number without a fractional component 
+    in 
+    [0, $\infty$) \\
+    real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+    \bottomrule
+  \end{tabular} 
+\end{center}
+
+\noindent
+The specification of \progname \ uses some derived data types: strings, 
+sequences and functions. 
+Sequences are lists filled with elements of the same data type.
+Strings are sequences of characters. 
+% Tuples contain a list of values, potentially of different types.
+In addition, \progname uses functions, which are defined by the data types of 
+their inputs and outputs. Functions can also be arguments to other functions 
+(e.g. the ODE is provided to the generator). 
+Local functions are described by giving their type signature followed by their 
+specification.
+
 
 %\section{Anticipated and Unlikely Changes} \label{SecChange}
 %
@@ -391,7 +439,7 @@ only code generators but also generators of code generators, etc.)
 \wss{I like the above summary.  I would like you to use the same systematic
   steps for presenting your code.}
 \als{I'm afraid this is challenging.}
-\subsection{Compile-Time}
+\subsection{Compile-Time}\label{ssec:compile-time}
 As the name implies, this is when the code is compiled. Code generation could 
 occur at this time, but this will not happen for the RK generator. Instead, 
 generation will occur when the ``odesolve'' entry-point function is called.
@@ -411,21 +459,21 @@ Syntax of the access programs available after this binding time.
     \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
     \hline
     odesolve &
-    $ [t_0,t_N] : \mathbb{R} \times \mathbb{R} , n : \mathbb{N} , 
+    $ [t_0,t_N] : \mathbb{R} \times \mathbb{R} , k : \mathbb{N} , 
     {\bf x_0} : \mathbb{C}^n , {\bf f} : \mathbb{R} \times \mathbb{C}^n 
     \rightarrow \mathbb{C}^n $ &
-    $(\mathbb{N} \times \mathbb{R} \rightarrow \mathbb{R})$ \texttt{code} & 
+    $(\mathbb{N}^0 \times \mathbb{R} \rightarrow \mathbb{R})$ \texttt{code} & 
     LESS\_THAN\_2\_KNOTS \\
     \hline
   \end{tabular}
 \end{center}
 For the sake of clarity and easier reference from the semantics portion, the 
-identifiers match most of the data definitions from the SRS. Note that $n$ is 
+identifiers match most of the data definitions from the SRS. Note that $k$ is 
 the exception; this is the number of knots (to divide the interval into to 
 determine the stepsize $h$ from the SRS).
 
 \subsubsection{Semantics}
-Semantics of the access programs available after this binding time.
+Semantics of the access program(s) available after this binding time.
 
 \paragraph{State Variables}
 
@@ -436,13 +484,14 @@ none
 \noindent odesolve():
 \begin{itemize}
   \item transition: N/A
-  \item output: $ out := (\mathbb{N} \times \mathbb{R} \rightarrow \mathbb{R})$ 
+  \item output: $ out := (\mathbb{N}^0 \times \mathbb{R} \rightarrow 
+  \mathbb{R})$ 
   \texttt{code}
   \begin{itemize}
     \item Code that contains a function that will provide a solution for points 
     such that point $p = t_0 + m \times h$ based on precomputed knowledge embedded in it by the generator.
   \end{itemize}
-  \item exception: $exc := (n < 2 \Rightarrow$ LESS\_THAN\_2\_KNOTS)
+  \item exception: $exc := (k < 2 \Rightarrow$ LESS\_THAN\_2\_KNOTS)
   \begin{itemize}
     \item The number of knots should be at least two, which would correspond to 
     one at each end of the interval, and the step size $h$ being equal to the 
@@ -450,8 +499,30 @@ none
   \end{itemize}
 \end{itemize}
 
+\subsubsection{Local Functions}
 
-\subsection{Generation Time}
+evalrk45: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times (\mathbb{R} 
+\times \mathbb{R}^n \rightarrow \mathbb{R}^n)$ $\rightarrow$ $\mathbb{R}^n$\\
+evalrk45($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM1\\
+rk45: $\mathbb{R}^n \times \mathbb{R}^n \times (\mathbb{R} \times \mathbb{R}^n 
+\times \mathbb{R}^n) \rightarrow (\mathbb{R}^n)^k$\\
+rk45($karray$, ${\bf x}_k$, ${\bf f}$) $\equiv$ $result : (\forall k | k 
+\in karray : result_i = evalrk45 (k_i,h, {\bf x}_k, {\bf f}))$ \\
+evalrk23: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times (\mathbb{R} 
+\times \mathbb{R}^n \rightarrow \mathbb{R}^n)$ $\rightarrow$ $\mathbb{R}^n$\\
+evalrk23($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM2\\
+construct: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times 
+(\mathbb{R}^n)^k \times \mathbb{N} \rightarrow (\mathbb{N} \times \mathbb{R} 
+\rightarrow (string \lor \mathbb{R}))$ code\\
+construct($t_0$,$t_N$,$karray$,$result$) $\equiv$ anonymous function(i,t) 
+$\equiv$ $(result_t)_i$ $\lor$ OUT\_OF\_RANGE\\
+
+Note that $karray$ is a sequence of size $k$ containing all the points for 
+which to run the chosen RK method, and $result$ is a two-dimensional 
+sequence of size $n \times k$ containing the result of running the RK method on 
+each point.
+
+\subsection{Generation Time}\label{ssec:generation-time}
 This is part of the run-time of the driver program, but from the point of view 
 of this library, separating the moment the code for a particular IVP is 
 generated and the moment(s) it is executed is useful.
@@ -460,54 +531,60 @@ The ODE, interval, step size, desired RK method and initial value are known at
 generation time. 
 Since these will not change when looking for solutions given a particular point 
 on the interval for which the algorithm is solving, the IVP can be solved at 
-this time.
+this time using the entry-point function created at compile-time.
 
-The type of the ODE is \lstinline|float -> float array -> float array|. The 
-types for the range, step size and initial value are 
-\lstinline|(float * float)|, \lstinline|float|, and \lstinline|float array| 
-respectively.
-The type of the function that is returned should be (close to) 
-\lstinline|(float -> float) code|.
-
-\subsection{Run-Time}
-This is also part of the driver program's run-time, but from the point of view 
-of the RK generator, this is (one of) the moment(s) when the generated code is 
-run.
-
-The function that will return values for any input within the specified 
-interval will execute at run-time.
-As shown in the previous subsection, the input will be a \lstinline|float|, and 
-the return type is another \lstinline|float|.
+Note that the generated code consists of a function that is not explicitly 
+named; this is up to the driver program. Therefore, the function name is 
+represented by ``anonymous function''.
+%The type of the ODE is \lstinline|float -> float array -> float array|. The 
+%types for the range, step size and initial value are 
+%\lstinline|(float * float)|, \lstinline|float|, and \lstinline|float array| 
+%respectively.
+%The type of the function that is returned should be (close to) 
+%\lstinline|(float -> float) code|.
 \subsection{Syntax}
 
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-	\begin{tabular}{p{5cm} p{3cm} p{3cm} p{2cm}}
-		\hline
-		\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-		\hline
-		N/A - anonymous function & i : $\mathbb{N}, t : \mathbb{R}$ & $ x_i(t) : \mathbb{R}$ & - \\
-		\hline
-	\end{tabular}
+  \begin{tabular}{p{5cm} p{3cm} p{3cm} p{3cm}}
+    \hline
+    \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+    \hline
+    N/A - anonymous function & i : $\mathbb{N}_0, t : \mathbb{R}$ & $ x_i(t) : 
+    \mathbb{R}$ & NOT\_IN\_RANGE \\
+    \hline
+  \end{tabular}
 \end{center}
 
 \subsection{Semantics}
+Semantics of the access program(s) available after this binding time.
 
 \subsubsection{State Variables}
 None.
 
 \subsubsection{Access Routine Semantics}
 
-\noindent anonymous function():
+\noindent ``anonymous function''():
 \begin{itemize}
-	\item transition: none
-	\item output: $out := x_{i}(t) \mathbb{R}$
-	\begin{itemize}
-	\item A numerical value for the particular point and ODE given as input
-	\end{itemize}
-	\item exception: $exc := (i < t_0 | i > t_N \Rightarrow$ NOT\_IN\_RANGE)
+  \item transition: none
+  \item output: $out := x_{i}(t) : \mathbb{R}$
+  \begin{itemize}
+    \item A numerical value for the particular point and ODE given as input
+  \end{itemize}
+  \item exception: $exc := (t < t_0 \lor t_N < t \Rightarrow$ NOT\_IN\_RANGE)
 \end{itemize}
+\subsection{Run-Time}\label{ssec:run-time}
+This is also part of the driver program's run-time, but from the point of view 
+of the RK generator, this is (one of) the moment(s) when the generated code is 
+run.
+
+The function that will return values for any input within the specified 
+interval (exported at generation time) will execute at run-time.
+%As shown in the previous subsection, the input will be a \lstinline|float|, 
+%and 
+%the return type is another \lstinline|float|.
+
 
 
 \section{Connection Between Requirements and Design} \label{SecConnection}
@@ -670,6 +747,6 @@ N/A.
 %\section*{References}
 
 \bibliographystyle {plainnat}
-\bibliography {Design}
+\bibliography {Design,../References}
 
 \end{document}
