@@ -533,7 +533,12 @@ k
 
 This function calls \lstinline[language=ML]|evalrk45| or 
 \lstinline[language=ML]|evalrk23| on every point in the interval that happens 
-to be a multiple of the step size (h).\\
+to be a multiple of the step size ($h$). $karray$ is a sequence of size $k$ 
+containing all the points for 
+which to run the chosen RK method. $result$ is a two-dimensional 
+sequence of size $n \times k$ containing the result of running the RK method on 
+each point. $evalrk$ is either the \lstinline[language=ML]|evalrk45| or 
+\lstinline[language=ML]|evalrk23| function.\\
 \\
 construct: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times 
 (\mathbb{R}^n)^k \times \mathbb{N} \rightarrow (\mathbb{N} \times \mathbb{R} 
@@ -543,12 +548,7 @@ $\equiv$ $(result_t)_i$ $\lor$ OUT\_OF\_RANGE
 
 This function takes the result of \lstinline[language=ML]|rk| and produces a 
 function that will return specific result values for specific ipnuts within the 
-interval.\\
-
-Note that $karray$ is a sequence of size $k$ containing all the points for 
-which to run the chosen RK method, and $result$ is a two-dimensional 
-sequence of size $n \times k$ containing the result of running the RK method on 
-each point.
+interval. $karray$ and $result$ are the same as above.
 
 \subsection{Generation Time}\label{ssec:generation-time}
 This is part of the run-time of the driver program, but from the point of view 
