@@ -99,6 +99,7 @@
 November 3 & 1.0 & Initial Draft\\
 November 8 & 1.1 & Processed feedback, continued writing\\
 November 29 & 1.2 & Processed feedback, added interface specifications\\
+December 7 & 1.3 & Processed Paul's feedback\\
 \bottomrule
 \end{tabularx}
 
@@ -445,7 +446,10 @@ only code generators but also generators of code generators, etc.)
 \subsection{Compile-Time}\label{ssec:compile-time}
 As the name implies, this is when the code is compiled. Code generation could 
 occur at this time, but this will not happen for the RK generator. Instead, 
-generation will occur when the ``odesolve'' entry-point function is called.
+generation will occur when the \lstinline[language=ML]|odesolve| entry-point 
+function is called. 
+This is the only function exposed to the driver program initially. (Generated 
+code will be available after calling \lstinline[language=ML]|odesolve|)
 
 The generator and its RK methods will be completely defined at this time. There 
 are no inputs to it at this time, because it is effectively a library. However, 
@@ -503,22 +507,43 @@ none
 \end{itemize}
 
 \subsubsection{Local Functions}
-
+These are other functions utilized by \lstinline[language=ML]|odesolve| to 
+generate its output. They also need to be implemented by the programmer(s).\\
+\\
 evalrk45: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times (\mathbb{R} 
 \times \mathbb{R}^n \rightarrow \mathbb{R}^n)$ $\rightarrow$ $\mathbb{R}^n$\\
-evalrk45($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM1\\
-rk45: $\mathbb{R}^n \times \mathbb{R}^n \times (\mathbb{R} \times \mathbb{R}^n 
-\times \mathbb{R}^n) \rightarrow (\mathbb{R}^n)^k$\\
-rk45($karray$, ${\bf x}_k$, ${\bf f}$) $\equiv$ $result : (\forall k | k 
-\in karray : result_i = evalrk45 (k_i,h, {\bf x}_k, {\bf f}))$ \\
+evalrk45($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM1
+
+This function corresponds to Instance Model 1 in the SRS.\\
+\\
 evalrk23: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times (\mathbb{R} 
 \times \mathbb{R}^n \rightarrow \mathbb{R}^n)$ $\rightarrow$ $\mathbb{R}^n$\\
-evalrk23($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM2\\
+evalrk23($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM2
+
+This function corresponds to Instance Model 2 in the SRS.\\
+\\
+rk: $\mathbb{R}^n \times \mathbb{R}^n \times 
+(\mathbb{R} \times \mathbb{R}^n \rightarrow \mathbb{R}^n) \times
+(\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times (\mathbb{R} 
+\times \mathbb{R}^n \rightarrow \mathbb{R}^n) \rightarrow \mathbb{R}^n) 
+\rightarrow (\mathbb{R}^n)^k$\\
+rk($karray$, ${\bf x}_k$, ${\bf f}$, $evalrk$) $\equiv$ $result : (\forall k | 
+k 
+\in karray : result_i = evalrk (k_i,h, {\bf x}_k, {\bf f}))$
+
+This function calls \lstinline[language=ML]|evalrk45| or 
+\lstinline[language=ML]|evalrk23| on every point in the interval that happens 
+to be a multiple of the step size (h).\\
+\\
 construct: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times 
 (\mathbb{R}^n)^k \times \mathbb{N} \rightarrow (\mathbb{N} \times \mathbb{R} 
 \rightarrow (string \lor \mathbb{R}))$ code\\
 construct($t_0$,$t_N$,$karray$,$result$) $\equiv$ anonymous function(i,t) 
-$\equiv$ $(result_t)_i$ $\lor$ OUT\_OF\_RANGE\\
+$\equiv$ $(result_t)_i$ $\lor$ OUT\_OF\_RANGE
+
+This function takes the result of \lstinline[language=ML]|rk| and produces a 
+function that will return specific result values for specific ipnuts within the 
+interval.\\
 
 Note that $karray$ is a sequence of size $k$ containing all the points for 
 which to run the chosen RK method, and $result$ is a two-dimensional 
@@ -528,7 +553,9 @@ each point.
 \subsection{Generation Time}\label{ssec:generation-time}
 This is part of the run-time of the driver program, but from the point of view 
 of this library, separating the moment the code for a particular IVP is 
-generated and the moment(s) it is executed is useful.
+generated and the moment(s) it is executed is useful. Since there is only one 
+access function available to the driver program, this is what happens when this 
+function is called.
 
 The ODE, interval, step size, desired RK method and initial value are known at 
 generation time. 
@@ -584,6 +611,7 @@ run.
 
 The function that will return values for any input within the specified 
 interval (exported at generation time) will execute at run-time.
+
 %As shown in the previous subsection, the input will be a \lstinline|float|, 
 %and 
 %the return type is another \lstinline|float|.
