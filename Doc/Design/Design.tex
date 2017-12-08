@@ -231,6 +231,8 @@ The following table summarizes the primitive data types used by \progname.
   \end{tabular} 
 \end{center}
 
+\wss{I see complex numbers later.  You should put this type in your table too.}
+
 \noindent
 The specification of \progname \ uses some derived data types: strings, 
 sequences and functions. 
@@ -443,6 +445,7 @@ only code generators but also generators of code generators, etc.)
 \wss{I like the above summary.  I would like you to use the same systematic
   steps for presenting your code.}
 \als{I'm afraid this is challenging.}
+
 \subsection{Compile-Time}\label{ssec:compile-time}
 As the name implies, this is when the code is compiled. Code generation could 
 occur at this time, but this will not happen for the RK generator. Instead, 
@@ -474,12 +477,23 @@ Syntax of the access programs available after this binding time.
     \hline
   \end{tabular}
 \end{center}
+
+\wss{You have complex numbers for your ode?  This is fine, but please make sure
+  that your SRS documentation reflects this decision.  (I haven't checked to see
+  what the SRS says.}
+\wss{What does the type of the output code imply?  I'm not sure what the natural
+  number is for?  I would have thought the output would be $\mathbb{R}
+  \rightarrow \mathbb{C}^n$ (a function from time to the complex numbers
+  defining the current values of the state variables).}
 For the sake of clarity and easier reference from the semantics portion, the 
 identifiers match most of the data definitions from the SRS. Note that $k$ is 
 the exception; this is the number of knots (to divide the interval into to 
-determine the stepsize $h$ from the SRS).
+determine the stepsize $h$ from the SRS). \wss{Have you updated the SRS to
+  mention knots?  The use of splines to obtain values between the ode solver
+  points is something that wasn't previously clear in your documentation.}
 
 \subsubsection{Semantics}
+
 Semantics of the access program(s) available after this binding time.
 
 \paragraph{State Variables}
@@ -496,7 +510,11 @@ none
   \texttt{code}
   \begin{itemize}
     \item Code that contains a function that will provide a solution for points 
-    such that point $p = t_0 + m \times h$ based on precomputed knowledge embedded in it by the generator.
+    such that point $p = t_0 + m \times h$ based on precomputed knowledge
+    embedded in it by the generator. \wss{This doesn't actually make things any
+      clearer.  I guess the natural number is $m$?  What happened to the complex
+      numbers?  Your initial values were a sequence of values, corresponding to
+      state variables $x_1$, $x_2$, ... $x_n$.  What happened to this sequence?}
   \end{itemize}
   \item exception: $exc := (k < 2 \Rightarrow$ LESS\_THAN\_2\_KNOTS)
   \begin{itemize}
@@ -506,7 +524,9 @@ none
   \end{itemize}
 \end{itemize}
 
-\subsubsection{Local Functions}
+\subsubsection{Local Functions} \wss{I don't see any complex numbers here.  Was
+  there earlier introduction a mistake, or am I missing something?}
+
 These are other functions utilized by \lstinline[language=ML]|odesolve| to 
 generate its output. They also need to be implemented by the programmer(s).\\
 \\
@@ -547,7 +567,8 @@ construct($t_0$,$t_N$,$karray$,$result$) $\equiv$ anonymous function(i,t)
 $\equiv$ $(result_t)_i$ $\lor$ OUT\_OF\_RANGE
 
 This function takes the result of \lstinline[language=ML]|rk| and produces a 
-function that will return specific result values for specific ipnuts within the 
+function that will return specific result values for specific ipnuts \wss{spell
+  check} within the 
 interval. $karray$ and $result$ are the same as above.
 
 \subsection{Generation Time}\label{ssec:generation-time}
@@ -777,7 +798,18 @@ N/A.
 
 %\section*{References}
 
+\wss{I had to delete the Parnas1972a to get bibtex to work.}
+
 \bibliographystyle {plainnat}
 \bibliography {Design,../References}
 
+\wss{What I was hoping to see was a transition from the unstaged code to the
+  staged version, like you did for the square function, and like what was done
+  for the vector norm in the ggk paper.  At the very least showing the unstaged
+  code shows the RK algorithm.}  \wss{Do you think someone, who knows MetaOcaml,
+  could implement the ode solver generator from the design specification.  I
+  feel like information is missing.  How do the local functions fit with the
+  odesolve function?  The reader has to piece that together for themselves?}
+\wss{Maybe you could include more code snippets in your design.  As we briefly
+  discussed a literate document would be a helpful approach here.}
 \end{document}
