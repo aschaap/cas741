@@ -337,6 +337,10 @@ if the program family is able to hide its usage thereof sufficiently).
 
 The responsibility of generating family members in a type-safe way restricts 
 the system to the MetaOCaml extension of the OCaml programming language.
+Code generation errors can be tricky (think C++ templates), so using a 
+type-safe language ensures that if it compiles, it most likely works as 
+expected.
+This also helps avoid more subtle errors that could easily go unnoticed.
 
 \section{Commonalities}
 
