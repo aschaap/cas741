@@ -41,4 +41,4 @@ $(FILENAME).pdf: $(FILENAME).tex $(DEPENDENCIES)
 	
 clean:
 	latexmk -C
-	$(foreach d,$(DEPENDENCIES),cd $(dir $(d)) && latexmk -C)
+	$(foreach d,$(DEPENDENCIES),cd $(dir $(d)) && make clean)
