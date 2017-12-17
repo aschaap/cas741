@@ -371,7 +371,42 @@ ending with theoretical models.
 There are various numerical methods for approximating ordinary differential 
 equation (ODE) given initial values. This problem is called an initial value 
 problem (IVP, see \tref{T_IVP}). A well-known way to solve these problems is 
-through Runge-Kutta methods.% (which include Euler's method).
+through Runge-Kutta (RK) methods.% (which include Euler's method).
+
+To explain RK methods, it is easiest to start with the Euler method. Euler's 
+method consists of simply taking the slope of the current point, and 
+extrapolating that for a distance of step size $h$ on the x-axis to create a 
+new point. Since the slope of the point changes, this method creates an 
+approximation that will always seem to ``lag behind'' the actual ODE, but with 
+a small enough step size, it should be pretty close. For larger intervals, 
+you'll see that the error appears to accumulate. See
+\autoref{fig:euler-method} as a simple illustration.
+
+\begin{figure}[htb]
+  \centering
+  \def\svgwidth{0.5\textwidth}
+  \input{figs/euler-method.pdf_tex}
+  \caption{Approximation obtained using Euler's method versus the actual 
+  solution}
+  \label{fig:euler-method}
+\end{figure}
+
+Using Euler's method as a starting point, one can see how accuracy could be 
+improved by 
+taking the slopes at both the current point as well as the current point 
+incremented by step 
+size $h$, and using the average of those two slopes as the slope with which to 
+extrapolate to approximate the point that is step size $h$ away from the 
+current 
+point. This is the second order Runge-Kutta (RK2) method.
+
+Runge-Kutta methods are a collection of methods that use slopes of multiple, 
+sometimes intermediate, points (found through successive extrapolation) to 
+create more accurate approximations. The slopes are also assigned potentially 
+different weights when finding the average. The more points one uses (the 
+higher the order of the RK method), the smaller the error should be (the error 
+will always be within $h^{(order\ of\ used\ RK\ method\ +\ 1)}$, which becomes
+smaller quite fast for small step sizes.
 
 \subsection{Terminology and  Definitions}
 
