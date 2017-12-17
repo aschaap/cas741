@@ -283,21 +283,7 @@ constraints.
 
 \subsection{Potential System Contexts}
 
-\autoref{fig:systemcontext} shows the system context. A circle represents than 
-external entity outside the software, which is the ``user'', or parent program 
-making use of the generator as a library. A rectangle is used to represent the 
-generator as well as the \famname{} family members it can generate. 
-
-Ideally, 
-the parent program knows the ODE(s) and other inputs at compile time, and
-uses each generated family member many times at run-time to maximize the 
-benefit of code generation. 
-Alternatively, the ODE(s) or other inputs are 
-not known at compile time; code generation can still happen at run-time, but 
-hopefully the parent program can offset the incurred cost of this on-the-fly 
-generation by running the optimized generated code enough times.
-
-\begin{figure}[ht]
+\begin{figure}[htb]
     \centering
 \begin{tikzpicture} [
     auto,
@@ -305,15 +291,15 @@ generation by running the optimized generated code enough times.
     b/.style = {rectangle, draw, text centered, rounded corners, minimum 
     height=2em},
     arrow/.style = {draw, ->},
-    node distance = 5cm
+    node distance = 3cm
     ]
     \node[c](user) {Parent program};
-    \node[b, right of=user](RKgen) {\famname{} Generator}; 
+    \node[b, right of=user, node distance = 8cm](RKgen) {\famname{}}; 
     \node[b, below of=RKgen](gen) {Generated code};
     
-    \draw[arrow] (user) -- node {Inputs} (RKgen);
+    \draw[arrow] (user) -- node {Calls with inputs} (RKgen);
     \draw[arrow] (RKgen) -- node {Produces} (gen);
-    \draw[arrow] (user) -- node {Calls} (gen);
+    \draw[arrow] (user) -- node {Calls with input} (gen);
     \draw[arrow] (gen) -| node {Results} (user);
     
 \end{tikzpicture}
@@ -321,12 +307,30 @@ generation by running the optimized generated code enough times.
 \label{fig:systemcontext}
 \end{figure}
 
+\autoref{fig:systemcontext} shows the system context. A circle represents than 
+external entity outside the software, which is the ``user'', or parent program 
+making use of the generator as a library. A rectangle is used to represent the 
+generator as well as the \famname{} family members it can generate. 
+
+Ideally, the parent program knows the ODE(s) and other inputs at compile time, 
+and provides them to the generator when calling it to generate family members.
+The parent program subsequently uses each generated family member many times at 
+run-time for different points within the interval, to maximize the benefit of 
+code generation.
+
+Alternatively, the ODE(s) or other inputs are not known at compile time; the 
+generator can still be called at run-time, but hopefully the parent program can 
+offset the incurred cost of this on-the-fly generation by running the optimized 
+generated code enough times.
+
+A breakdown of responsibilities of both the user and the \famname{} is provided 
+below:
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
 \item Provide appropriate input to the system
 \item Ensure assumptions on the input are met (see \autoref{ssec:Assumptions})
-\item Correctly process the resulting output
+\item Correctly process the resulting output function
 \end{itemize}
 \item \famname{} Responsibilities:
 \begin{itemize}
