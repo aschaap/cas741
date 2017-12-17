@@ -130,7 +130,8 @@ ${\bf f}$ & ODE for which to solve
 \\
 $h$ & step size
 \\ 
-${\bf k}_{1..4}$ & intermediate variables in the RK4 method, similar to 
+${\bf k}_{1},{\bf k}_{2}, {\bf k}_{3}, {\bf k}_{4}$ & intermediate 
+variables in the RK4 method, similar to 
 ${\bf Y}_1$ \wss{I don't know what the subscript notation means here.  Do you
   have 4 vectors of $k$ values or one vector with 4 values?}
 \\ 
@@ -146,7 +147,8 @@ $t_k$ & any $t$ on the interval $[t_0..t_N]$
 \\ 
 ${\bf x(t)}$ & a function of $t$
 \\ 
-${\bf x}'$ & derivative of ${\bf x(t)}$ \wss{add: with respect to $t$}
+${\bf x}'$ & derivative of ${\bf x(t)}$ with respect to $t$ \wss{add: with 
+respect to $t$}
 \\ 
 ${\bf x}_0$ & initial values for ${\bf f}$
 \\ 
@@ -154,7 +156,7 @@ ${\bf x}_k$ & (numerical approximation of) a point on the solution for
 ${\bf f}$
 \\ 
 ${\bf Y}_1$ & intermediate variables in the RK2 method, similar to ${\bf 
-k}_{1..4}$
+k}_{1}..{\bf k}_{4}$
 \\
 \bottomrule
 \end{longtable*}
@@ -226,18 +228,21 @@ software), this document details the uses and limitations of the \famname{}.
 
 \subsection{Scope of the Family}
 %loosely modelled after 3dfim+
-The responsibility of the family is solving the provided ODEs for given 
-intervals, initial values and step sizes using the specified RK method. The 
+The responsibility of the family is solving the provided first order ODEs (in 
+explicit form) for given intervals, initial values and step sizes using the 
+specified RK method. The 
 user will have to ensure the RK method specified is appropriate for their 
 particular problem(s), and they will have to ensure appropriate and correct 
 input is provided (see \nameref{ssec:Assumptions}). 
-Additionally, the user will also have to process the output appropriately.
-
+Additionally, the user will also have to process the output appropriately; 
+namely use the generated function that will take inputs within the given 
+interval and provide approximate solutions for them.
 \wss{Your scope should specify which kind of ODEs you solve.  Your software
   solves systems of first order ODEs.  You do not solve higher order ODEs,
   presumably because they can be recast as systems of first order ODEs.  In
   addition, the functional form of your ODE can be given explicitly, as opposed
   to being in implicit form.}
+\als{I've added this.}
 
 \subsection{Characteristics of Intended Reader} 
 The reader is expected to have some undergraduate background in a math-heavy 
@@ -255,9 +260,9 @@ Metaprogramming may be beyond the scope of most undergraduate degrees though.
 \subsection{Organization of Document}
 %inspired by FamilyOfMaterialModels
 The organization of this document follows the template for a commonality 
-analysis (CA) provided by Dr.~W.~S.~Smith, \wss{The citations are enough; you
-  don't need to mention me separately} which is in turn adapted from 
-\cite{Lai2004},\cite{SmithAndLai2005}, \cite{Smith2006} and 
+analysis (CA) \wss{The citations are enough; you
+  don't need to mention me separately} \als{Removed your name.} adapted from 
+\cite{Lai2004}, \cite{SmithAndLai2005}, \cite{Smith2006} and 
 \cite{SmithEtAl2007}.
 
 The structure of this document is essentially top-down, with detail added as 
