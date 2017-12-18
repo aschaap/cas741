@@ -696,11 +696,13 @@ This section focuses on the problem that \famname{} is designed to solve.
   \hline
   Output & 
   \begin{itemize}
-    \item anonymous function : $\mathbb{N}_0 \times \mathbb{R} \rightarrow 
-    \mathbb{R}$
+    \item anonymous function : $\mathbb{R} \rightarrow 
+    \mathbb{R}^n$
   \end{itemize}
-  This function takes in an index (to select a specific element of the output 
-  vector) and a value $t$ for which to return a solution. \\
+  This function takes in 
+  %an index (to select a specific element of the output vector) and 
+  a value $t$ for which to return an approximation of the given ODE at that 
+  point. \\
   \hline
   Description & 
                 The inputs of an initial value problem are given above. 
@@ -934,12 +936,12 @@ I removed the $h_k$ parameter, as I'm not considering variable step size.}
         updated it to reflect the $k$th step.}
         This method starts by calculating the slope at $x_k$, represented by 
         ${\bf k}_1$. Extrapolating this slope ${\bf k}_1$ from point ${\bf 
-          x}_k$, it calculates the slope of the point halfway between $t_k$ 
-        and $t_{k+1}$. Subsequently, it calculates another slope of the point 
+          x}_k$, it calculates a slope for the point halfway between $t_k$ 
+        and $t_{k+1}$. Subsequently, it calculates a better slope for the point 
         halfway between $t_k$ and $t_{k+1}$ when extrapolating slope ${\bf 
-        k}_2$ from point ${\bf 
-          x}_k$. Finally, it calculates the slope of the point at $t_{k+1}$ 
-          when extrapolating slope ${\bf k}_3$ from point ${\bf x}_k$.
+        k}_2$ from point ${\bf x}_k$. Finally, it calculates the slope of the 
+        point at $t_{k+1}$ by extrapolating slope ${\bf k}_3$ from point ${\bf 
+        x}_k$.
 %        Calculating a new point is necessary to create a spline to solve IVPs 
 %(\tref{T_IVP}).
         In addition to the ODE (\ddref{DD_ODE}), this 
@@ -967,30 +969,38 @@ I removed the $h_k$ parameter, as I'm not considering variable step size.}
   program depending on the value of $f$.}
 \als{I've added this as part of the description of 
 \ref{IM_One-step_IVP_solver}.}
-\subsection{Output} \label{sec_Output}    
-N/A. Every program family member will output a numerical approximation of an 
-ODE in the form of a function that can be called by the user.
+\subsection{Output} \label{sec_Output}
+Every program family member consists of a function that will output a numerical 
+approximation of an ODE at a particular point on the given interval (which 
+should be a multiple of the step size added to the lower bound of the interval).
+
+The accuracy of the generated function may vary depending the family member 
+that produced it and the ODE that was approximated.
 
 \section{Traceability Matrices and Graphs}
 The traceability matrices below show the relationships between the various 
 concepts defined in this document. Rows may be affected by changes in the items 
 the columns consist of (especially in the context of assumptions.)
-\begin{table}[ht]
+\begin{table}[htb]
   \centering
-  \begin{tabular}{lccccccc}
+  \begin{tabular}{lcccccccc}
   \toprule
     & \ddref{DD_ODE} & \ddref{DD_interval} & \ddref{DD_initialvalues} & 
-    \ddref{DD_stepsize} & \tref{T_IVP} & \iref{IM_RK4} & \iref{IM_RK2}  \\ 
+    \ddref{DD_stepsize} & \tref{T_IVP} & \iref{IM_One-step_IVP_solver} & 
+    \iref{IM_RK2} & \iref{IM_RK4} \\ 
     \midrule
-\ddref{DD_ODE} &  &  &  &  & \checkmark &  &  \\ 
-\ddref{DD_interval}    &  &  &  &  & \checkmark &  &  \\ 
-\ddref{DD_initialvalues}    & \checkmark &  &  &  & \checkmark &  &  \\ 
-\ddref{DD_stepsize}    &  & \checkmark &  &  & \checkmark &  &  \\ 
-\tref{T_IVP}    &  &  &  &  &  &  &  \\ 
-\iref{IM_RK4}    & \checkmark & \checkmark & \checkmark & \checkmark & 
-\checkmark &  &  \\ 
+\ddref{DD_ODE} &  &  &  &  & \checkmark &  &  &  \\ 
+\ddref{DD_interval}    &  &  &  &  & \checkmark &  &  &  \\ 
+\ddref{DD_initialvalues}    & \checkmark &  &  &  & \checkmark &  &  &  \\ 
+\ddref{DD_stepsize}    &  & \checkmark &  &  & \checkmark &  &  &  \\ 
+\tref{T_IVP}    &  &  &  &  &  &  &  &  \\ 
+\iref{IM_One-step_IVP_solver}    & \checkmark & \checkmark & \checkmark & 
+\checkmark & 
+\checkmark &  &  &  \\ 
 \iref{IM_RK2}    & \checkmark & \checkmark & \checkmark & \checkmark & 
-\checkmark &  &  
+\checkmark & \checkmark &  &  \\ 
+\iref{IM_RK4}    & \checkmark & \checkmark & \checkmark & \checkmark & 
+\checkmark & \checkmark &  &  
 \\ 
 \bottomrule
 \end{tabular}
@@ -998,7 +1008,7 @@ the columns consist of (especially in the context of assumptions.)
 theory}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[htb]
   \centering
   \begin{tabular}{lcccccc}
   \toprule 
@@ -1010,8 +1020,9 @@ theory}
 \ddref{DD_initialvalues} &  &  & \checkmark &  \\ 
 \ddref{DD_stepsize} &  &  &  &  \\ 
 \tref{T_IVP} &  &  &  &  &  \\ 
-\iref{IM_RK4} & \checkmark & \checkmark &  &  \\ 
+\iref{IM_One-step_IVP_solver} &  &  &  &  \\ 
 \iref{IM_RK2} & \checkmark & \checkmark &  &  \\ 
+\iref{IM_RK4} & \checkmark & \checkmark &  &  \\ 
   \bottomrule 
 \end{tabular}
 \caption{Traceability matrix for assumptions}
