@@ -443,6 +443,9 @@ programs.
 execution of specific code fragments is delayed; these fragments are then 
 combined into larger fragments and ultimately executed.
 
+\item Numerical method: a specific way to numerically approximate solutions to 
+a particular problem (rather than symbolic manipulations).
+
 \item OCaml: A multi-paradigm programming language (imperative \& functional) 
 with a syntax that will appear somewhat unusual to most.
 
@@ -617,9 +620,12 @@ Symbol &${\bf f}$\\
 
 \subsection{Goal Statements}
 
-\noindent Given the non-stiff continuous ODE, an interval and the desired step 
-size, as well as 
-an initial value, the goal statement is:
+\noindent Given the specified ODE (\ddref{DD_ODE}; non-stiff and continuous, as 
+per 
+\aref{A_ODEnonstiffcontinuous}), an interval (\ddref{DD_interval}) and the 
+desired step 
+size (\ddref{DD_stepsize}), as well as 
+an initial condition (\ddref{DD_initialvalues}), the goal statement is:
 
 \begin{itemize}
 
@@ -649,8 +655,7 @@ phase 2 that starts in January.}
 
 \subsection{Theoretical Models} \label{sec_theoretical}
 
-This section focuses on the general equations and laws that \famname{} is based
-on.
+This section focuses on the problem that \famname{} is designed to solve.
 
 ~\newline
 
@@ -664,26 +669,41 @@ on.
   \hline
   Label&\bf Initial value problem (IVP)\\
   \hline
-  Equation&  ${\bf x'} = {\bf f} (t,{\bf x} (t))$, \quad ${\bf 
-  x}(t_0) = {\bf x}_0$ \quad
-    where 
+  Input &
+  %${\bf x'} = {\bf f} (t,{\bf x} (t))$, \quad 
+  %$[t_0 .. t_N]$, \quad 
+  %${\bf x}(t_0) = {\bf x}_0$ \quad
+  %where 
     \begin{itemize}
-        \item ${\bf x} : \mathbb{R} \rightarrow \mathbb{C}^n$ is the 
-    vector solution as a function of time
-        \item ${\bf x}_0 \in 
-        \mathbb{C}^n$ is the initial condition (see \ddref{DD_initialvalues})
-        \item ${\bf f} : 
-    \mathbb{R} \times \mathbb{C}^n \rightarrow \mathbb{C}^n$ is the function 
-    describing the vector field (see \ddref{DD_ODE})
-   \end{itemize} 
-   Given an initial value ${\bf x}_0$, the goal is to find approximations on a 
-   given interval $[t_0 .. t_N]$.\\
+      %\item ${\bf x} : \mathbb{R} \rightarrow \mathbb{C}^n$ is the 
+      %vector solution as a function of time
+      \item ${\bf f} : 
+      \mathbb{R} \times \mathbb{C}^n \rightarrow \mathbb{C}^n$ is the function 
+      describing the vector field (see \ddref{DD_ODE})
+      \item $t_0, t_N : \mathbb{R} \times \mathbb{R}$ the bounds of the 
+      interval within which to solve (see \ddref{DD_interval})
+      \item ${\bf x}_0 : 
+      \mathbb{C}^n$ is the initial condition (see \ddref{DD_initialvalues})
+      \item $h : \mathbb{R}$ the step size (see \ddref{DD_stepsize})
+    \end{itemize} 
+%   Given an initial value ${\bf x}_0$, the goal is to find approximations on a 
+%   given interval.
+    \\
+  \hline
+  Output & 
+  \begin{itemize}
+    \item anonymous function : $\mathbb{N}_0 \times \mathbb{R} \rightarrow 
+    \mathbb{R}$
+  \end{itemize}
+  This function takes in an index (to select a specific element of the output 
+  vector) and a value $t$ for which to return a solution. \\
   \hline
   Description & 
-                The standard form of an initial value problem is given above. 
+                The inputs of an initial value problem are given above. 
                 The issue is that many IVPs are difficult to solve manually (or 
                 programmatically) and the correct solutions are often unknown. 
-                Numerical methods are close enough to be used in most 
+                Numerical methods such as RK methods are close enough to be 
+                used in most 
                 applications.\\
   \hline
   Source &
@@ -698,7 +718,7 @@ on.
 \wss{It would be better if you used the instance model template for your
   theoretical model.  In particular, a clear separation between the inputs and
   the ouputs would be nice.}
-
+\als{I separated the Equation row into Input and Output.}
 \section{Variabilities}
 
 Assumptions on all variations of the program family are covered first.
@@ -719,20 +739,24 @@ variability in output is covered.
 
 \begin{itemize}
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_RKorder}:] The user 
-will specify what order of RK method they want used during code generation, 
-either second (\iref{T_RK4}) or fourth (\iref{IM_RK2}). \wss{This is a
-  variability, but it isn't an assumption.}
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_RKorder}:] Only the 
+second (\iref{T_RK4}) and fourth (\iref{IM_RK2}) order RK methods will be used. 
+\wss{This is a
+  variability, but it isn't an assumption.} \als{I're changed this to reflect 
+  which instance models are available as per Geneva's suggestion.}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum 
 \label{A_ODEnonstiffcontinuous}:] The ODE (\ddref{DD_ODE}) provided will be 
-continuous and 
-non-stiff (otherwise the user accepts that the results will be inaccurate)
+continuous (particularly on the interval of computation (\ddref{DD_interval})) 
+and 
+non-stiff (otherwise the user accepts that the results will be inaccurate).
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvaluesata}:] The 
-given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
-interval (\ddref{DD_interval}), represented by $t_0$. \wss{The assumptions don't
-  need to repeat things you have alread said.}
+%\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvaluesata}:] 
+%The 
+%given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
+%interval (\ddref{DD_interval}), represented by $t_0$. 
+\wss{The assumptions don't
+  need to repeat things you have alread said.} \als{Removed this.}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvalues}:] 
 Initial value (\ddref{DD_initialvalues}) vector size is expected to match the 
@@ -742,19 +766,23 @@ ones produced by the ODE
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_interval}:] The 
 interval's bounds (\ddref{DD_interval}) satisfy $t_0 < t_N$ (both real 
 numbers) and $t_N - t_0 = n 
-\times h$. \wss{In general with floating point arithmetic this won't necessarily
+\times h$. This will make adding interpolation in phase 2 easier.
+  \wss{In general with floating point arithmetic this won't necessarily
   be true.  In practice if $h$ is added to the time for each time step, you
-  won't end exactly at $t_N$.  Do you really need this assumption to be true?}
+  won't end exactly at $t_N$.  Do you really need this assumption to be true?} 
+  \als{No, but it is useful for when interpolation is added.}
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_stepsize}:] The step 
-size (\ddref{DD_stepsize}) shall be a positive real number. \wss{You can give
-  this through the type of $h$; you don't need an assumption for this information.}
-
+%\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_stepsize}:] The step 
+%size (\ddref{DD_stepsize}) shall be a positive real number. 
+  \wss{You can give
+  this through the type of $h$; you don't need an assumption for this 
+  information.} \als{I've removed this as well.}
 \end{itemize}
 
 \wss{It is okay to have a short list of assumptions.  It feels like you might
   have been trying to ``pad'' the list.  What about an assumption that $f$ is
   continuous on the interval of computation?}
+\als{I've added this to \aref{A_ODEnonstiffcontinuous}}
 
 \subsection{Calculation} \label{sec_Calculation}
 
