@@ -1,21 +1,21 @@
 open Prelude
 
 (* runge kutta 4th order integration *)
-let evalrk45 x h yin f =
-    let l = Array.length yin in
+let evalrk45 tk h xk f =
+    let l = Array.length xk in
     let hh = h *. 0.5 in
-    let xh = x +. hh in (*point between x_k and x_{k+1}*)
-    let k1 = f x yin in 
-    let yt = Array.init l (fun i -> yin.(i) +. hh *. k1.(i)) in
-    let k2 = f xh yt in
-    let yt = Array.init l (fun i -> yin.(i) +. hh *. k2.(i)) in
-    let k3 = f xh yt in
-    let yt = Array.init l (fun i -> yin.(i) +. h *. k3.(i)) in
+    let tkh = tk +. hh in (*point between t_k and t_{k+1}*)
+    let k1 = f tk xk in 
+    let yt = Array.init l (fun i -> xk.(i) +. hh *. k1.(i)) in
+    let k2 = f tkh yt in
+    let yt = Array.init l (fun i -> xk.(i) +. hh *. k2.(i)) in
+    let k3 = f tkh yt in
+    let yt = Array.init l (fun i -> xk.(i) +. h *. k3.(i)) in
     let k2k3 = Array.init l (fun i -> k3.(i) +. k2.(i)) in
-    let k4 = f (x+.h) yt in
+    let k4 = f (tk+.h) yt in
     let h6 = h /. 6.0 in
     Array.init l (fun i -> 
-            yin.(i) +. h6 *. (k1.(i)+.k4.(i)+.2.0*.k2k3.(i)) )
+            xk.(i) +. h6 *. (k1.(i)+.k4.(i)+.2.0*.k2k3.(i)) )
 
 (* runge kutta 2nd order integration *)
 (*let evalrk23 x h yin f =
@@ -39,8 +39,6 @@ let rk45s xknot yin f =
     yout.(i+1) <- evalrk45 (xknot.(i)) dx yout.(i) f;
   done;
   yout
-
-
 
 let find_index num knots x =
     let n1 = num-1 and n2 = num-2 in
