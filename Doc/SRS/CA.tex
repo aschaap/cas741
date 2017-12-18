@@ -465,6 +465,13 @@ interpolate so that the whole interval is solved for. (See also
 \item Stiff ODE: an ODE for which certain numerical methods are numerically 
 unstable unless the step size is extremely small. There is no exact definition.
 
+\item Type-safe: Applicable to programming languages; property that follows 
+from such a language not allowing conversions/reductions of valid (adherent to 
+the language's type system) programs to a state where the type system is 
+violated, nor from where no further reduction is possible. So all valid 
+programs can evaluate to a value in the language's set of evaluation rules. A 
+simple example: whether the type system allows for integers to be used as 
+floating point number.
 \end{itemize}
 
 \subsection{Data Definitions} \label{sec_datadef}
@@ -610,16 +617,26 @@ Symbol &${\bf f}$\\
 
 \subsection{Goal Statements}
 
-\noindent Given the non-stiff continuous ODE, the goal statements are:
+\noindent Given the non-stiff continuous ODE, an interval and the desired step 
+size, as well as 
+an initial value, the goal statement is:
 
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] Given 
-an RK method specification, an interval and the desired step size, as well as 
-an initial value, calculate a spline and generate (in a type-safe manner) a 
-function that uses this spline to solve for specific points within the provided 
+an RK method specification, calculate solutions for and generate (in a 
+type-safe manner) a 
+function that uses these solutions to solve for specific points (multiples of 
+the step size) within the provided 
 interval.
+Type-safe code generation means that the code snippets or fragments will have 
+types, rather than being strings for example. If done properly, this allows 
+only valid code to be generated.
 
+In phase 2 (starting in January 2018), spline interpolation (between the points 
+that fall on multiples of the step size) will be added. This 
+will allow the generated function to solve for any point within the interval, 
+rather than only specific ones.
 \end{itemize}
 
 \wss{Why are you mentioning a spline?  In addition to solving the ode at the
@@ -627,6 +644,8 @@ interval.
   so, you should add information defining a spline, and you'll need to be more
   specific on what spline you are using in terms of order and continuity
   conditions at the knots.}
+\als{Unfortunately, it seems I was too ambitious. Splines have been moved to 
+phase 2 that starts in January.}
 
 \subsection{Theoretical Models} \label{sec_theoretical}
 
