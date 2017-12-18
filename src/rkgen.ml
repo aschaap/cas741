@@ -51,7 +51,6 @@ let find_index num knots x =
 
 
 let constructs a b k y n =
-  let m = Array.length y in
   let bod i = .< fun x -> 
     if ((x<a) || (x>b)) then
       Left "Error: x not in range"
