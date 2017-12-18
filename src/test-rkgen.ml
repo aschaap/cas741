@@ -1,4 +1,4 @@
-(*open Prelude*)
+open Prelude
 
 (* open Runcode *)
 (* open Print_code *)
@@ -37,13 +37,33 @@ open Rkgen
 
 let test_f0 x y = 
     Array.init (Array.length y) (fun i -> 0. )
+
+let pf = function
+      Left x -> begin print_string x; print_endline "" end;
+    | Right x -> begin print_float x; print_endline "" end;;
+
+(*let List.iter (fun x -> pf (b 0 x))
+        [-2.1; -2.0; -1.97; -0.97; 0.1; 1.82; 1.84; 1.93; 2.0; 2.01]*)
     
 let testevalrk45_0 _ =
-  let x0 = Array.init 1 (fun _ -> 0.0) in
-  let result = evalrk45 1.0 0.1 x0 test_f0 in
+  let xk = Array.init 1 (fun _ -> 0.0) in
+  let h = 0.1 in
+  let tk = 1.0 in
+  let result = evalrk45 tk h xk test_f0 in
   assert_equal
     (Array.init 1 (fun _ -> 0.0))
     result
+
+let testrk45simpleode _ =
+  let x0 = Array.init 1 (fun _ -> 1.0) in
+  let f _ x = Array.init (Array.length x) (fun i -> 5.0 *. x.(i) -. 3.0 ) in
+  let h = 0.1 in
+  let t0 = 2.0
+  and tn = 3.0 in
+  let numknots = int_of_float ((tn -. t0) /. h) in
+  let code = odesolve t0 tn numknots x0 f in
+  List.iter (fun x -> pf ((Runcode.run code) 0 x))
+        [-1024.0; 0.0; 2.0; 2.2; 2.5; 3.0; 23.0]
 
 (* assembling tests into suites *)
 let rksuite =
@@ -55,4 +75,5 @@ let rksuite =
 (* running test suites *)
 let () =
     run_test_tt_main rksuite;
+    testrk45simpleode ()
 
