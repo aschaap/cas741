@@ -44,7 +44,8 @@ let pf = function
 
 (*let List.iter (fun x -> pf (b 0 x))
         [-2.1; -2.0; -1.97; -0.97; 0.1; 1.82; 1.84; 1.93; 2.0; 2.01]*)
-    
+let numknots t0 tn h = int_of_float ((tn -. t0) /. h)
+
 let testevalrk45_0 _ =
   let xk = Array.init 1 (fun _ -> 0.0) in
   let h = 0.1 in
@@ -54,16 +55,36 @@ let testevalrk45_0 _ =
     (Array.init 1 (fun _ -> 0.0))
     result
 
-let testrk45simpleode _ =
+let testrksimpleode order =
   let x0 = Array.init 1 (fun _ -> 1.0) in
   let f _ x = Array.init (Array.length x) (fun i -> 5.0 *. x.(i) -. 3.0 ) in
   let h = 0.1 in
   let t0 = 2.0
   and tn = 3.0 in
-  let numknots = int_of_float ((tn -. t0) /. h) in
-  let code = odesolve t0 tn numknots x0 f in
+  let code = odesolve order t0 tn (numknots t0 tn h) x0 f in
   List.iter (fun x -> pf ((Runcode.run code) 0 x))
         [-1024.0; 0.0; 2.0; 2.2; 2.5; 3.0; 23.0]
+
+let testrkhighorderode order =
+  let x0 = Array.init 1 (fun _ -> 3.0) in
+  let f t x = Array.init (Array.length x) (fun i -> 7.0 *. x.(i) *. x.(i) *. t *. t *. t ) in
+  let h = 0.1 in
+  let t0 = 2.0
+  and tn = 4.0 in
+  let code = odesolve order t0 tn (numknots t0 tn h) x0 f in
+  List.iter (fun x -> pf ((Runcode.run code) 0 x))
+        [-89.0; 0.0; 2.0; 2.5; 3.0; 8192.0]
+
+
+let testrkstiffode order =
+  let x0 = Array.init 1 (fun _ -> 1.0) in
+  let f t x = Array.init (Array.length x) (fun i -> -15.0 *. x.(i)) in
+  let h = 0.1 in
+  let t0 = 0.0
+  and tn = 1.0 in
+  let code = odesolve order t0 tn (numknots t0 tn h) x0 f in
+  List.iter (fun x -> pf ((Runcode.run code) 0 x))
+        [-1.0; 0.0; 0.4; 1.0; 1.5]
 
 (* assembling tests into suites *)
 let rksuite =
@@ -75,5 +96,15 @@ let rksuite =
 (* running test suites *)
 let () =
     run_test_tt_main rksuite;
-    testrk45simpleode ()
+    testrksimpleode 2;
+    print_endline "---";
+    testrksimpleode 4;
+    print_endline "---";
+    testrkhighorderode 2;
+    print_endline "---";
+    testrkhighorderode 4;
+    print_endline "---";
+    testrkstiffode 2;
+    print_endline "---";
+    testrkstiffode 4;
 
