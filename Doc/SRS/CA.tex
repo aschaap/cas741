@@ -511,7 +511,8 @@ Symbol &${\bf f}$\\
   \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}\\
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}, 
+  \aref{A_ODEnonstiffcontinuous}, \aref{A_initialvalues}\\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -545,7 +546,8 @@ Symbol &${\bf f}$\\
         \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
+  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \aref{A_ODEnonstiffcontinuous}, 
+  \aref{A_interval}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -578,7 +580,8 @@ Symbol &${\bf f}$\\
         \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \ddref{DD_stepsize}, \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}\\
+  Ref.\ By & \ddref{DD_stepsize}, \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}, 
+  \aref{A_initialvalues}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -756,7 +759,7 @@ non-stiff (otherwise the user accepts that the results will be inaccurate).
 %given initial values (\ddref{DD_initialvalues}) are for the beginning of the 
 %interval (\ddref{DD_interval}), represented by $t_0$. 
 \wss{The assumptions don't
-  need to repeat things you have alread said.} \als{Removed this.}
+  need to repeat things you have alread said.} \als{Removed this assumption.}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_initialvalues}:] 
 Initial value (\ddref{DD_initialvalues}) vector size is expected to match the 
@@ -776,7 +779,7 @@ numbers) and $t_N - t_0 = n
 %size (\ddref{DD_stepsize}) shall be a positive real number. 
   \wss{You can give
   this through the type of $h$; you don't need an assumption for this 
-  information.} \als{I've removed this as well.}
+  information.} \als{I've removed this assumption as well.}
 \end{itemize}
 
 \wss{It is okay to have a short list of assumptions.  It feels like you might
@@ -932,17 +935,16 @@ theory}
   \centering
   \begin{tabular}{lcccccc}
   \toprule 
-  & \aref{A_RKorder} & \aref{A_ODEnonstiffcontinuous} & 
-  \aref{A_initialvaluesata} & \aref{A_initialvalues} 
-  & \aref{A_interval} & \aref{A_stepsize} \\ 
+  & \aref{A_RKorder} & \aref{A_ODEnonstiffcontinuous} & \aref{A_initialvalues} 
+  & \aref{A_interval} \\ 
   \midrule 
-\ddref{DD_ODE} &  & \checkmark &  &  &  &  \\ 
-\ddref{DD_interval} &  &  &  &  & \checkmark &  \\ 
-\ddref{DD_initialvalues} &  &  & \checkmark & \checkmark &  &  \\ 
-\ddref{DD_stepsize} &  &  &  &  &  & \checkmark \\ 
-\tref{T_IVP} &  &  & \checkmark &  &  &  \\ 
-\iref{T_RK4} & & \checkmark &  &  &  &  \\ 
-\iref{IM_RK2} & & \checkmark &  &  &  &  \\ 
+\ddref{DD_ODE} &  & \checkmark & \checkmark &  \\ 
+\ddref{DD_interval} &  & \checkmark &  & \checkmark \\ 
+\ddref{DD_initialvalues} &  &  & \checkmark &  \\ 
+\ddref{DD_stepsize} &  &  &  &  \\ 
+\tref{T_IVP} &  &  &  &  &  \\ 
+\iref{T_RK4} & \checkmark & \checkmark &  &  \\ 
+\iref{IM_RK2} & \checkmark & \checkmark &  &  \\ 
   \bottomrule 
 \end{tabular}
 \caption{Traceability matrix for assumptions}
