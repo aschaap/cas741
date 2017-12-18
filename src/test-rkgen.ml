@@ -35,8 +35,8 @@ open OUnit2 (*use OCAMLFIND_COMMANDS="ocamlc=metaocamlc" ocamlfind ocamlc -w Ax 
 
 open Rkgen
 
-let test_f0 x y = 
-    Array.init (Array.length y) (fun i -> 0. )
+let test_f0 _ y = 
+    Array.init (Array.length y) (fun _ -> 0. )
 
 let pf = function
       Left x -> begin print_string x; print_endline "" end;
@@ -78,7 +78,7 @@ let testrkhighorderode order =
 
 let testrkstiffode order =
   let x0 = Array.init 1 (fun _ -> 1.0) in
-  let f t x = Array.init (Array.length x) (fun i -> -15.0 *. x.(i)) in
+  let f _ x = Array.init (Array.length x) (fun i -> -15.0 *. x.(i)) in
   let h = 0.1 in
   let t0 = 0.0
   and tn = 1.0 in
