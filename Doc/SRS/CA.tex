@@ -398,7 +398,8 @@ incremented by step
 size $h$, and using the average of those two slopes as the slope with which to 
 extrapolate to approximate the point that is step size $h$ away from the 
 current 
-point. This is the second order Runge-Kutta (RK2) method.
+point. This is the second order Runge-Kutta (RK2) method (for the mathematical 
+definition, see \iref{IM_RK2}).
 
 Runge-Kutta methods are a collection of methods that use slopes of multiple, 
 sometimes intermediate, points (found through successive extrapolation) to 
@@ -406,7 +407,7 @@ create more accurate approximations. The slopes are also assigned potentially
 different weights when finding the average. The more points one uses (the 
 higher the order of the RK method), the smaller the error should be (the error 
 will always be within $h^{(order\ of\ used\ RK\ method\ +\ 1)}$, which becomes
-smaller quite fast for small step sizes.
+smaller quite fast for small step sizes).
 
 \subsection{Terminology and  Definitions}
 
@@ -511,7 +512,7 @@ Symbol &${\bf f}$\\
   \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}, 
+  Ref.\ By & \iref{IM_RK4}, \iref{IM_RK2}, \tref{T_IVP}, 
   \aref{A_ODEnonstiffcontinuous}, \aref{A_initialvalues}\\
   \hline
 \end{tabular}
@@ -546,7 +547,7 @@ Symbol &${\bf f}$\\
         \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}, \aref{A_ODEnonstiffcontinuous}, 
+  Ref.\ By & \iref{IM_RK4}, \iref{IM_RK2}, \aref{A_ODEnonstiffcontinuous}, 
   \aref{A_interval}\\
         \hline
     \end{tabular}
@@ -580,7 +581,7 @@ Symbol &${\bf f}$\\
         \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \ddref{DD_stepsize}, \iref{T_RK4}, \iref{IM_RK2}, \tref{T_IVP}, 
+  Ref.\ By & \ddref{DD_stepsize}, \iref{IM_RK4}, \iref{IM_RK2}, \tref{T_IVP}, 
   \aref{A_initialvalues}\\
         \hline
     \end{tabular}
@@ -611,12 +612,12 @@ Symbol &${\bf f}$\\
         $h : \mathbb{R}$ is the distance between the points within interval 
         $[t_0,t_N]$ for which to find approximations.  %using RK methods (as 
         %described in 
-        %\iref{T_RK4} and \iref{IM_RK2}).
+        %\iref{IM_RK4} and \iref{IM_RK2}).
         \\
         \hline
   Sources & \cite{corless_graduate_2013} \\
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2}\\
+  Ref.\ By & \iref{IM_RK4}, \iref{IM_RK2}\\
         \hline
     \end{tabular}
 \end{minipage}\\
@@ -713,7 +714,7 @@ This section focuses on the problem that \famname{} is designed to solve.
            \cite{corless_graduate_2013} p. 510, 513\\
   % The above web link should be replaced with a proper citation to a publication
   \hline
-  Ref.\ By & \iref{T_RK4}, \iref{IM_RK2} \\
+  Ref.\ By & \iref{IM_RK4}, \iref{IM_RK2} \\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -743,7 +744,8 @@ variability in output is covered.
 \begin{itemize}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_RKorder}:] Only the 
-second (\iref{T_RK4}) and fourth (\iref{IM_RK2}) order RK methods will be used. 
+second (\iref{IM_RK4}) and fourth (\iref{IM_RK2}) order RK methods will be 
+used. 
 \wss{This is a
   variability, but it isn't an assumption.} \als{I're changed this to reflect 
   which instance models are available as per Geneva's suggestion.}
@@ -791,6 +793,9 @@ numbers) and $t_N - t_0 = n
 
 The family can utilize either of the instance models listed below for any of 
 its members.
+As stated in \iref{IM_One-step_IVP_solver}, the functions $\phi$ and ${\bf f} 
+(t_k, {\bf x}_k)$ constitute two variabilities, as different definitions of 
+either of these will yield different program family members.
 
 \wss{To make this clear that you have a family of methods, I would introduce an
   instance model for one-step initial value problem solvers.  The equation would
@@ -798,6 +803,96 @@ its members.
   difference for your family members is how $\phi$ is defined.  This approach
   would let you easily add new family members in the specification, simply by
   giving new values for $\phi$.}
+\als{I've done this; I hope I'm still using the template constructs correctly. 
+I'm considering the possibility of moving them to the theoretical models 
+section, but not sure how I would convey that these constitute variabilities by 
+doing so, except for adding text in the description of 
+\iref{IM_One-step_IVP_solver}. 
+I removed the $h_k$ parameter, as I'm not considering variable step size.}
+
+\noindent
+\begin{minipage}{\textwidth}
+  \renewcommand*{\arraystretch}{1.5}
+  \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+    \hline
+    \rowcolor[gray]{0.9}
+    Number & IM\refstepcounter{instnum}\theinstnum 
+    \label{IM_One-step_IVP_solver}\\
+    \hline
+    Label &\bf One-step IVP solver\\
+    \hline
+    Equations &  
+    \begin{itemize}
+      \item ${\bf x}_{k+1} = {\bf x}_k + h \phi(t_k, {\bf x}_k)$
+    \end{itemize}\\
+    \hline
+    Description & 
+    The above equation provides the skeleton can be used to calculate (an 
+    approximation of) a 
+    new point given the previous or starting point, given some definition of 
+    the $\phi$ function, two of which are given below (\iref{IM_RK2}, 
+    \iref{IM_RK4}). ${\bf f} (t_k, {\bf x}_k)$ is another variability, since 
+    each definition of ${\bf f} (t_k, {\bf x}_k)$ will yield another program 
+    family member.
+    In addition to the ODE (\ddref{DD_ODE}) this 
+    also requires an interval (\ddref{DD_interval}), step size 
+    (\ddref{DD_stepsize}) and initial condition 
+    (\ddref{DD_initialvalues}).\\
+    \hline
+    Source &
+    Dr.~W.~S.~Smith \\
+    % The above web link should be replaced with a proper citation to a 
+    %publication
+    \hline
+    Ref.\ By & \iref{IM_RK2}, \iref{IM_RK4}\\
+    \hline
+  \end{tabular}
+\end{minipage}\\
+
+\noindent
+\begin{minipage}{\textwidth}
+  \renewcommand*{\arraystretch}{1.5}
+  \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+    \hline
+    \rowcolor[gray]{0.9}
+    Number & IM\refstepcounter{instnum}\theinstnum \label{IM_RK2}\\
+    \hline
+    Label &\bf Second-order Runge-Kutta method (Improved Euler method)\\
+    \hline
+    Equations &  
+    \begin{itemize}
+      \item $t_{k+1} = t_{k} + h$
+      \item ${\bf Y}_1 = {\bf x}_k + h {\bf f} (t_k, {\bf x}_k)$ %new 
+      %intermediate point at x_{k+1} by extrapolating slope at x_k
+      \item $\phi(t_k, {\bf x}_k) = \Big( \dfrac{1}{2} {\bf f} 
+      (t_k,{\bf x}_k) + \dfrac{1}{2} {\bf f} (t_{k+1}, {\bf Y}_1) \Big)$ 
+      %new point by averaging slope at current point and slope at new 
+      %point for extrapolating from current point
+    \end{itemize}\\
+    \hline
+    Description & 
+    The above equations lead to the definition of a function $\phi$, which can 
+    be used to calculate (an approximation of) a 
+    new point given the previous point in conjunction with 
+    \iref{IM_One-step_IVP_solver}. In addition to the ODE 
+    (\ddref{DD_ODE}) this 
+    also requires an interval (\ddref{DD_interval}), step size 
+    (\ddref{DD_stepsize}) and initial condition 
+    (\ddref{DD_initialvalues}).\\
+    \hline
+    Source &
+    \cite{corless_graduate_2013} p. 616 \\
+    % The above web link should be replaced with a proper citation to a 
+    %publication
+    \hline
+    Ref.\ By & \aref{A_ODEnonstiffcontinuous}\\
+    \hline
+  \end{tabular}
+\end{minipage}\\
+
+~\newline
+
+~\newline
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -805,40 +900,49 @@ its members.
     \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
         \hline
         \rowcolor[gray]{0.9}
-        Number& IM\refstepcounter{instnum}\theinstnum \label{T_RK4}\\
+        Number& IM\refstepcounter{instnum}\theinstnum \label{IM_RK4}\\
         \hline
         Label&\bf Fourth order Runge-Kutta method (RK4)\\
         \hline
         Equation&  
         \begin{itemize}
-            \item $t_1 = t_0 + h$
-            \item ${\bf k}_1 = {\bf f} (t_0, {\bf x}_0)$ slope at $x_0$
-            \item ${\bf k}_2 = {\bf f} (t_0 + \dfrac{h}{2}, {\bf x}_0 + 
-            \dfrac{h}{2} {\bf k}_1)$ slope of the point halfway between $t_0$ 
-            and $t_1$ when extrapolating slope ${\bf k}_1$ from point ${\bf 
-                x}_0$
-            \item ${\bf k}_3 = {\bf f} (t_0 + \dfrac{h}{2}, {\bf x}_0 + 
-            \dfrac{h}{2} {\bf k}_2)$ slope of the point halfway between $t_0$ 
-            and $t_1$ when extrapolating slope ${\bf k}_2$ from point ${\bf 
-                x}_0$
-            \item ${\bf k}_4 = {\bf f} (t_0 + h, {\bf x}_0 + 
-            h {\bf k}_3)$ slope of point at $t_1$ when extrapolating slope 
-            ${\bf k}_3$ from point ${\bf x}_0$
-            \item ${\bf x}_1 = {\bf x}_0 + \dfrac{h}{6} ( {\bf k}_1 + 2 {\bf 
-                k}_2 + 2 {\bf k}_3 + {\bf k}_4)$ new point created when 
-            extrapolating from point ${\bf x}_0$ using a weighted average of 
+            \item $t_{k+1} = t_{k} + h$
+            \item ${\bf k}_1 = {\bf f} (t_k, {\bf x}_k)$ 
+            \item ${\bf k}_2 = {\bf f} (t_k + \dfrac{h}{2}, {\bf x}_k + 
+            \dfrac{h}{2} {\bf k}_1)$
+            \item ${\bf k}_3 = {\bf f} (t_k + \dfrac{h}{2}, {\bf x}_k + 
+            \dfrac{h}{2} {\bf k}_2)$
+            \item ${\bf k}_4 = {\bf f} (t_k + h, {\bf x}_k + 
+            h {\bf k}_3)$
+            \item $\phi(t_k,{\bf x}_k) = \dfrac{1}{6} ( {\bf k}_1 + 2 
+            {\bf k}_2 + 2 {\bf k}_3 + {\bf k}_4)$ new point created when 
+            extrapolating from point ${\bf x}_k$ using a weighted average of 
             the previously calculated slopes
             
         \end{itemize}\\
         \hline
         Description & 
-        The above equations can be used to calculate (an approximation of) a 
-        new point given the previous or starting point. Note that the above is 
-        a specific instance (for simplicity) of the general method (namely, the 
-        first step). \wss{Why specify the first step?  Why not specify the $k$th
-                      step?}  Calculating a new point is necessary to create a spline to 
-        solve IVPs (\tref{T_IVP}). In addition to the ODE (\ddref{DD_ODE}), 
-        this 
+        The above equations lead to the definition of a function $\phi$, which 
+        can be used to calculate (an approximation of) a 
+        new point given the previous point in conjunction with 
+        \iref{IM_One-step_IVP_solver}.
+%        Note that the above is a specific instance (for simplicity) of the 
+%        general method (namely, the first step). 
+        \wss{Why specify the first step?  Why not specify the $k$th
+          step?}
+        \als{I copied a textbook example and forgot to generalize it, I've 
+        updated it to reflect the $k$th step.}
+        This method starts by calculating the slope at $x_k$, represented by 
+        ${\bf k}_1$. Extrapolating this slope ${\bf k}_1$ from point ${\bf 
+          x}_k$, it calculates the slope of the point halfway between $t_k$ 
+        and $t_{k+1}$. Subsequently, it calculates another slope of the point 
+        halfway between $t_k$ and $t_{k+1}$ when extrapolating slope ${\bf 
+        k}_2$ from point ${\bf 
+          x}_k$. Finally, it calculates the slope of the point at $t_{k+1}$ 
+          when extrapolating slope ${\bf k}_3$ from point ${\bf x}_k$.
+%        Calculating a new point is necessary to create a spline to solve IVPs 
+%(\tref{T_IVP}).
+        In addition to the ODE (\ddref{DD_ODE}), this 
         also requires an interval (\ddref{DD_interval}), step size 
         (\ddref{DD_stepsize}) and initial condition 
         (\ddref{DD_initialvalues}).\\
@@ -848,58 +952,21 @@ its members.
         % The above web link should be replaced with a proper citation to a 
         %publication
         \hline
-        Ref.\ By & N/A\\
+        Ref.\ By & \aref{A_ODEnonstiffcontinuous}\\
         \hline
     \end{tabular}
 \end{minipage}\\
 
 \wss{Again, I'm not sure how splines fit into this?}
+\als{Mostly via my optimism at the time, so I've removed the reference to it.}
 
 ~\newline
-\noindent
-\begin{minipage}{\textwidth}
-    \renewcommand*{\arraystretch}{1.5}
-    \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
-        \hline
-        \rowcolor[gray]{0.9}
-        Number & IM\refstepcounter{instnum}\theinstnum \label{IM_RK2}\\
-        \hline
-        Label &\bf Second-order Runge-Kutta method (Improved Euler method)\\
-        \hline
-        Equations &  
-        \begin{itemize}
-            \item ${\bf Y}_1 = {\bf x}_k + h {\bf f} (t_k, {\bf x}_k)$ %new 
-            %intermediate point at x_{k+1} by extrapolating slope at x_k
-            \item ${\bf x}_{k+1} = {\bf x}_k + h \Big( \dfrac{1}{2} {\bf f} 
-            (t_k,{\bf x}_k) + \dfrac{1}{2} {\bf f} (t_{k+1}, {\bf Y}_1) \Big)$ 
-            %new point by averaging slope at current point and slope at new 
-            %point for extrapolating from current point
-        \end{itemize}\\
-        \hline
-        Description & 
-        The above equations can be used to calculate (an approximation of) a 
-        new point given the previous or starting point. Calculating a new point 
-        is necessary to create a spline to 
-        solve IVPs (\tref{T_IVP}). In addition to the ODE (\ddref{DD_ODE}) this 
-        also requires an interval (\ddref{DD_interval}), step size 
-        (\ddref{DD_stepsize}) and initial condition 
-        (\ddref{DD_initialvalues}).\\
-        \hline
-        Source &
-        \cite{corless_graduate_2013} p. 616 \\
-        % The above web link should be replaced with a proper citation to a 
-        %publication
-        \hline
-        Ref.\ By & N/A\\
-        \hline
-    \end{tabular}
-\end{minipage}\\
 
-~\newline
 
 \wss{Why isn't the function $f$ listed as a variability?  You get a different
   program depending on the value of $f$.}
-
+\als{I've added this as part of the description of 
+\ref{IM_One-step_IVP_solver}.}
 \subsection{Output} \label{sec_Output}    
 N/A. Every program family member will output a numerical approximation of an 
 ODE in the form of a function that can be called by the user.
@@ -913,14 +980,14 @@ the columns consist of (especially in the context of assumptions.)
   \begin{tabular}{lccccccc}
   \toprule
     & \ddref{DD_ODE} & \ddref{DD_interval} & \ddref{DD_initialvalues} & 
-    \ddref{DD_stepsize} & \tref{T_IVP} & \iref{T_RK4} & \iref{IM_RK2}  \\ 
+    \ddref{DD_stepsize} & \tref{T_IVP} & \iref{IM_RK4} & \iref{IM_RK2}  \\ 
     \midrule
 \ddref{DD_ODE} &  &  &  &  & \checkmark &  &  \\ 
 \ddref{DD_interval}    &  &  &  &  & \checkmark &  &  \\ 
 \ddref{DD_initialvalues}    & \checkmark &  &  &  & \checkmark &  &  \\ 
 \ddref{DD_stepsize}    &  & \checkmark &  &  & \checkmark &  &  \\ 
 \tref{T_IVP}    &  &  &  &  &  &  &  \\ 
-\iref{T_RK4}    & \checkmark & \checkmark & \checkmark & \checkmark & 
+\iref{IM_RK4}    & \checkmark & \checkmark & \checkmark & \checkmark & 
 \checkmark &  &  \\ 
 \iref{IM_RK2}    & \checkmark & \checkmark & \checkmark & \checkmark & 
 \checkmark &  &  
@@ -943,7 +1010,7 @@ theory}
 \ddref{DD_initialvalues} &  &  & \checkmark &  \\ 
 \ddref{DD_stepsize} &  &  &  &  \\ 
 \tref{T_IVP} &  &  &  &  &  \\ 
-\iref{T_RK4} & \checkmark & \checkmark &  &  \\ 
+\iref{IM_RK4} & \checkmark & \checkmark &  &  \\ 
 \iref{IM_RK2} & \checkmark & \checkmark &  &  \\ 
   \bottomrule 
 \end{tabular}
