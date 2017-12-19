@@ -16,6 +16,7 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{listings}
 
 \usepackage[round]{natbib}
 
@@ -319,6 +320,9 @@ external entity outside the software, which is the ``user'', or parent program
 making use of the generator as a library. A rectangle is used to represent the 
 generator as well as the \famname{} family members it can generate. 
 
+Using the library is as simple as using an \lstinline[language=ML]|open| 
+statement, though even this is not strictly necessary. If it is used, it will 
+be compiled into the parent program.
 Ideally, the parent program knows the ODE(s) and other inputs at compile time, 
 and provides them to the generator when calling it to generate family members.
 The parent program subsequently uses each generated family member many times at 
