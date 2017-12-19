@@ -6,7 +6,7 @@
 \hypersetup{
     colorlinks,
     citecolor=black,
-    filecolor=black,
+    filecolor=blue,
     linkcolor=red,
     urlcolor=blue
 }
@@ -33,13 +33,17 @@ The latest version can be found at \url{https://github.com/aschaap/cas741}.\\
 \midrule
 October 16 & 1.0 & Initial draft for presentation\\
 October 25 & 1.1 & Processed feedback and completed report\\
+December 18 & 1.2 & Final version, processed issues and new feedback\\
 \bottomrule
 \end{tabularx}
 
 ~\newpage
 
 \section{Symbols, Abbreviations and Acronyms}
+Also see the \href{../SRS/CA.pdf#ssec:symbols}{Table of Symbols} in the SRS at 
+\url{https://github.com/aschaap/cas741}.\\
 
+\noindent
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l} 
   \toprule		
@@ -57,12 +61,12 @@ October 25 & 1.1 & Processed feedback and completed report\\
 
 \tableofcontents
 
-\listoftables
+%\listoftables
 
-\listoffigures
+%\listoffigures
 
 \wss{If you don't have tables or figures, you can comment out these headings.}
-
+\als{I've commented them out}
 \newpage
 
 \pagenumbering{arabic}
@@ -86,12 +90,14 @@ The scope of the testing of the RK Generator is restricted to correctness, in
 some cases within an expected margin of error. Performance, while implied, 
 should also be measured. The implementation could be compared to an unstaged 
 version of the same code (plain OCaml rather than MetaOCaml; no generation). 
-Alternatively, a comparison against Matlab would give an indication of 
-performance compared to the competition.
-
+Alternatively, a comparison against \textsc{\textsc{Matlab}} would give an 
+indication of 
+performance compared to the competition. This is a secondary goal though.
+The tests in this document follow from the \href{../SRS/CA.pdf}{SRS} available 
+at \url{https://github.com/aschaap/cas741}.
 \wss{An explicit web-link to your GitHub repo would be nice.}
-
-\wss{Reference your SRS document}
+\als{I've added one to the revision history as well as here.}
+\wss{Reference your SRS document}\als{Done.}
 
 \subsection{Overview of Document}
 The structure of this documents is based on \cite{Smith2006}. The next section 
@@ -151,20 +157,24 @@ branching in this software.
 %  execution etc.  Enter not applicable if that is the case.}
 
 Ideally, unit tests capture all the desired behaviour. However, manual 
-inspection of the generated code will be required. The manual assessment should 
+inspection of the generated code by the developer will be required. The manual 
+assessment should 
 determine 
 whether modifications to the generator are beneficial to either making the code 
 more readable or improving the results in terms of accuracy.
 While readability isn't strictly a requirement, simple (and therefore more 
 readable) code is often a decent indicator of correctness in metaprogramming.
-
+A common approach used for metaprogramming is outputting generated code to text 
+and comparing it to a previous version. Any differences are subject to manual 
+inspection. Note that the correctness of the previous code is not guaranteed; 
+this is also subject to manual inspection.
 \wss{In your case having a build infrastructure where you can do a diff between
   the generated code and some ``golden'' version of the generated code, would be
   nice.  This won't tell you if your generated code is correct, but it will tell
   you if you generator starts creating different code.  This either means you
   have introduced an error, or you have a new ``golden'' version to put in
   place.  This is the approach used for ggk and for Drasil.}
-
+\als{I've added a summary of this approach.}
 \section{System Test Description}
 
 Also known as black-box tests, system tests verify the software as a whole. 
@@ -175,11 +185,13 @@ This section covers the system tests along with non-functional tests.
 
 The intent is to test using problems with known solutions to get around oracle 
 problem.
-Results of other ODE solvers such as Matlab or Octave can be used for 
+Results of other ODE solvers such as \textsc{Matlab} or Octave can be used for 
 comparison purposes in case of unknown solutions.
 Currently, all tests have known solutions.  \wss{I would like to see some tests
-  where you compare to Matlab or Octave as the pseudo oracle.  This will provide
-  a greater variety of tests.}
+  where you compare to \textsc{Matlab} or Octave as the pseudo oracle.  This 
+  will provide
+  a greater variety of tests.} \als{I'm afraid I'll have to move that to phase 
+  2; I've updated the corresponding section to reflect this.}
 
 It is assumed that these tests test both the generator and the generated code. 
 The inputs therefore are for the generator, but inputs are also needed for the 
@@ -203,21 +215,26 @@ Type: Functional, Dynamic
 					
 Initial State: N/A
 					
-Input (generator): $x'(t) = 5x - 3 \quad x(2) = 1, \quad 2 \leq t \leq 3, \quad 
+Input (to generator): $x'(t) = 5x - 3 \quad x(2) = 1, \quad 2 \leq t \leq 3, 
+\quad 
 h = 0.1$
 
-Input (generated): 2, 3, 0, -1024, 2.2, 2.5, 23 \wss{What are these numbers?
+Input (to generated code): $t$ = 2, 3, 0, -1024, 2.2, 2.5, 23 \wss{What are 
+these 
+numbers?
   The final value of $t$, or something else?}
+\als{I've added $t$ to make this unambiguous.}
 					
-Output (RK4): values that match\footnote{Taking potential floating-point 
-rounding 
-errors into account} the output of the exact solution $x(t) = \frac{2}{5} 
-e^{5(t-2)} + \frac{3}{5}$ for the same inputs
+Output (RK4): printed values for the user to compare to the exact solution 
+$x(t) = \frac{2}{5} 
+e^{5(t-2)} + \frac{3}{5}$ for the same inputs to see whether they are 
+acceptably close.
 
-Output (RK2): similar to RK4, but with some margin of error that is within 
-$O(h^3)$.
+Output (RK2): similar to RK4, but with a higher margin of error in most cases
+(should be within$O(h^3)$).
 					
-How test will be performed: via OUnit
+How test will be performed: as part of the automated tests executed by the 
+Makefile.
 
 \wss{Rather than make the vague statement that you are taking floating point
   errors into account, I think your goal should be to summarize the relative
@@ -225,7 +242,8 @@ How test will be performed: via OUnit
   specify a priori what the error should be, the job of your testing is to
   simply describe the results.  Judging the acceptability of the errors is
   something that can be done by potential users of the software.}
-					
+\als{I've changed the test cases to reflect this change.}
+
 \item{High-order-ODE\footnote{Adapted from:
 \url{http://mathinsight.org/ordinary_differential_equation_introduction_examples}}\\}
 
@@ -233,22 +251,24 @@ Type: Functional, Dynamic
 
 Initial State: N/A
 
-Input (generator): $x'(t) = 7x^2x^3 \quad x(2) = 3, \quad 2 \leq t \leq 4, 
+Input (to generator): $x'(t) = 7x^2t^3 \quad x(2) = 3, \quad 2 \leq t \leq 4, 
 \quad h = 0.1$ \wss{Why not just write $x'(t) = 7x^5$? (product rule for
   exponents).  Is there supposed to be a $t$ on the right hand side of the
   equation?  Looking into this further, I believe you mean $7 x^2 t^3$.}
+\als{Yes, my mistake. Thank you for pointing this out, I've corrected it.}
 
-Input (generator): 2, 3, 0, 2.5, -89, 8192
+Input (to generated code): $t$ = 2, 3, 0, 2.5, -89, 8192
 
-Output (RK4): values close to the exact solution $x(t) = 
+Output (RK4): printed values close to the exact solution $x(t) = 
 \frac{-1}{\frac{7}{4}x^4 - 
-\frac{85}{3}}$; error should be within $O(h^5)$. A plot of the error could help 
-indicate this in a way that gives more confidence.
+\frac{85}{3}}$; the error should be within $O(h^5)$. The user can then decide 
+whether these results are acceptable.
 
-Output (RK2): similar to that of RK4, but with the larger margin of error of 
-$O(h^3)$.
+Output (RK2): similar to that of RK4, but with the larger margin of error (of 
+$O(h^3)$).
 
-How test will be performed: via OUnit
+How test will be performed: as part of the automated tests executed by the 
+Makefile.
 
 \item{Stiff-ODE\\}
 
@@ -256,14 +276,19 @@ Type: Functional, Dynamic
 
 Initial State: N/A
 
-Input: $y'(t) = -15y(t),\quad  y(0) = 1, \quad 0 \leq t \leq 1, \quad h = 0.1$.
+Input (to generator): $y'(t) = -15y(t),\quad  y(0) = 1, \quad 0 \leq t \leq 1, 
+\quad h = 0.1$.
 
-Output (RK4 \& RK2): An inaccurate numeric result that deviates significantly 
+Input (to generated code): $t$ = -1, 0, 0.4, 1, 1.5
+
+Output (RK4 \& RK2): A printed inaccurate numeric result that deviates 
+significantly 
 from the exact 
 solution of $y(t) = e^{-15t}$ with $y(t) \rightarrow 0$ as $t \rightarrow 
-\infty$ (or even as $t \rightarrow 1$).
+\infty$ (or even as $t \rightarrow 1$), also for the user to manually inspect.
 
-How test will be performed: via OUnit
+How test will be performed: as part of the automated tests executed by the 
+Makefile.
 
 
 %\item{test-id2\\}
@@ -280,24 +305,26 @@ How test will be performed: via OUnit
 
 \end{enumerate}
 
-Test via diffing the output of the generator with previous results and decide 
-whether any change is desired or not
-
-Inspect code to see whether it matches the algorithm; aim to write code that 
-reflects it.  \wss{I agree with this.  You should mention it under non-testing
+\wss{I agree with this.  You should mention it under non-testing
   based verification.  You should also give more detail on how it is going to be
   done, who is going to do it, etc.  Ideally, there will be a specific approach
   for the verification, including a pointer to the specific algorithm that the
   final code should resemble.}
-
-... \wss{Does the ... mean something?  Are more details coming?}
-
+\als{I've moved these sentences and expanded on the topic under non-testing 
+based verification.}
+\wss{Does the ... mean something?  Are more details coming?}
+\als{No, I removed them.}
 \subsection{Tests for Nonfunctional Requirements}
 The implied nonfunctional requirement to be tested is performance. There is no 
 ``wrong'' result though. The goal is to provide insight into the performance in 
 comparison to obvious alternatives.
+
 \subsubsection{Performance Tests}
-		
+This section discusses tests that compare the performance of the implementation 
+to that of existing implementations.
+These tests are part of phase two, which will commence in January 2018, due to 
+performance being a secondary goal and the limited time in which everything 
+must be done.
 \paragraph{Calculation Speed Tests}
 
 \begin{enumerate}
@@ -318,18 +345,20 @@ faster
 					
 How test will be performed: via Make and OUnit
 					
-\item{Comparison against Matlab\\}
+\item{Comparison against \textsc{\textsc{Matlab}}\\}
 
 Type: Non-Functional, Dynamic
 					
 Initial State: N/A
 					
 Input: Input to any one of the functional tests above will be provided to both 
-Matlab and the generator (note that Matlab could require a different input 
+\textsc{Matlab} and the generator (note that \textsc{Matlab} could require a 
+different input 
 format)
 					
-Output: Similar output but with the expectation that Matlab may be more 
-accurate. Matlab will also likely be faster (excluding start-up time).
+Output: Similar output but with the expectation that \textsc{Matlab} may be 
+more 
+accurate. \textsc{Matlab} will also likely be faster (excluding start-up time).
 					
 How test will be performed: via Make
 
@@ -343,7 +372,7 @@ How test will be performed: via Make
   difference in performance.  You will need a long integration time for
   differences to be observable.}
 
-%\item{Comparison against Matlab\\}
+%\item{Comparison against \textsc{Matlab}\\}
 %
 %Type: Functional, Dynamic, Manual, Static etc.
 %
@@ -427,17 +456,17 @@ These tests will have to be defined after implementation.
 
 \newpage
 
-\section{Appendix}
-
-This is where you can place additional information.
-
-\subsection{Symbolic Parameters}
-
-The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
-Their values are defined in this section for easy maintenance.
-
-\subsection{Usability Survey Questions?}
-
-This is a section that would be appropriate for some teams.
+%\section{Appendix}
+%
+%This is where you can place additional information.
+%
+%\subsection{Symbolic Parameters}
+%
+%The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
+%Their values are defined in this section for easy maintenance.
+%
+%\subsection{Usability Survey Questions?}
+%
+%This is a section that would be appropriate for some teams.
 
 \end{document}
