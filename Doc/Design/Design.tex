@@ -67,7 +67,7 @@
 
 \usepackage{xspace}
 
-\newcommand{\progname}{the RKF45 Generator\xspace}
+\newcommand{\progname}{the RK Generator\xspace}
 
 \newcounter{acnum}
 \newcommand{\actheacnum}{AC\theacnum}
@@ -110,7 +110,8 @@ December 18 & 1.4 & Final version, processed more feedback\\
 \newpage
 
 \section{Symbols, Abbreviations \& Acronyms}
-See the \href{../SRS/CA.pdf#ssec:symbols}{Table of Symbols} in the SRS at 
+See the \href{../SRS/CA.pdf#ssec:symbols}{Table of Symbols} in the 
+\href{../SRS/CA.pdf}{SRS} at 
 \url{https://github.com/aschaap/cas741}.
 
 
@@ -202,9 +203,10 @@ decompose this program.
 %decomposition that was constructed according to the likely changes. 
 Section~\ref{SecConnection} specifies the connections between the software 
 requirements and the modules. Section~\ref{SecMD} gives a detailed description 
-of the modules. Section~\ref{SecTM} includes two traceability matrices. 
+of the modules. Section~\ref{SecTM} will include two traceability matrices. 
 One checks the completeness of the design against the requirements provided in 
-the SRS. The other shows the relation between anticipated changes and the 
+the SRS that follows from the \href{../SRS/CA.pdf}{Commonality Analysis}. The 
+other shows the relation between anticipated changes and the 
 modules. Section~\ref{SecUse} describes the use relation between modules.
 
 \section{Notation}\label{sec:Notation}
@@ -492,10 +494,17 @@ Syntax of the access programs available after this binding time.
   number is for?  I would have thought the output would be $\mathbb{R}
   \rightarrow \mathbb{C}^n$ (a function from time to the complex numbers
   defining the current values of the state variables).}
+\als{It's just an index to choose an element from the output vector; I've added 
+an explanation below.}
 For the sake of clarity and easier reference from the semantics portion, the 
-identifiers match most of the data definitions from the SRS. Note that $k$ is 
+identifiers match most of the \href{../SRS/CA.pdf#sec_datadef}{data 
+definitions} from the \href{../SRS/CA.pdf}{SRS}. Note that $k$ is 
 the exception; this is the number of knots (to divide the interval into to 
-determine the stepsize $h$ from the SRS). \wss{Have you updated the SRS to
+determine the step size $h$ from the \href{../SRS/CA.pdf}{SRS}). 
+The output type is an anonymous function that takes in not only a value of $t : 
+\mathbb{R}$ but also an index (of type $\mathbb{N}^0$) to select an element 
+from the output vector.
+\wss{Have you updated the SRS to
   mention knots?  The use of splines to obtain values between the ode solver
   points is something that wasn't previously clear in your documentation.}
 
@@ -541,13 +550,15 @@ evalrk45: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times (\mathbb{R}
 \times \mathbb{R}^n \rightarrow \mathbb{R}^n)$ $\rightarrow$ $\mathbb{R}^n$\\
 evalrk45($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM1
 
-This function corresponds to Instance Model 1 in the SRS.\\
+This function corresponds to Instance Model 1 in the 
+\href{../SRS/CA.pdf}{SRS}.\\
 \\
 evalrk23: $\mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \times (\mathbb{R} 
 \times \mathbb{R}^n \rightarrow \mathbb{R}^n)$ $\rightarrow$ $\mathbb{R}^n$\\
 evalrk23($t_k$,$h$, ${\bf x}_k$, ${\bf f}$) $\equiv$ IM2
 
-This function corresponds to Instance Model 2 in the SRS.\\
+This function corresponds to Instance Model 2 in the 
+\href{../SRS/CA.pdf}{SRS}.\\
 \\
 rk: $\mathbb{R}^n \times \mathbb{R}^n \times 
 (\mathbb{R} \times \mathbb{R}^n \rightarrow \mathbb{R}^n) \times
