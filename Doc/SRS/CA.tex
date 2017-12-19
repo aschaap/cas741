@@ -633,7 +633,8 @@ Symbol &${\bf f}$\\
 
 \subsection{Goal Statements}
 
-\noindent Given the specified ODE (\ddref{DD_ODE}; non-stiff and continuous, as 
+\noindent Given an RK method specification, the specified ODE (\ddref{DD_ODE}; 
+non-stiff and continuous, as 
 per 
 \aref{A_ODEnonstiffcontinuous}), an interval (\ddref{DD_interval}) and the 
 desired step 
@@ -643,7 +644,7 @@ an initial condition (\ddref{DD_initialvalues}), the goal statement is:
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] Given 
-an RK method specification, calculate solutions for and generate (in a 
+Calculate solutions for and generate (in a 
 type-safe manner) a 
 function that uses these solutions to solve for specific points (multiples of 
 the step size) within the provided 
