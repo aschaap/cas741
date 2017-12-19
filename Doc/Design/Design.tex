@@ -83,7 +83,7 @@
 
 \begin{document}
 
-\title{Design: RKF45 Generator} 
+\title{Design: Runge-Kutta (RK) Generator} 
 %\author{Alexander Schaap}
 \date{\today}
 
@@ -103,6 +103,7 @@ November 3 & 1.0 & Initial Draft\\
 November 8 & 1.1 & Processed feedback, continued writing\\
 November 29 & 1.2 & Processed feedback, added interface specifications\\
 December 7 & 1.3 & Processed Paul's feedback\\
+December 18 & 1.4 & Final version, processed more feedback\\
 \bottomrule
 \end{tabularx}
 
@@ -237,7 +238,7 @@ The following table summarizes the primitive data types used by \progname.
 \end{center}
 
 \wss{I see complex numbers later.  You should put this type in your table too.}
-
+\als{Complex numbers are present by mistake, and have been removed.}
 \noindent
 The specification of \progname \ uses some derived data types: strings, 
 sequences and functions. 
@@ -475,8 +476,8 @@ Syntax of the access programs available after this binding time.
     \hline
     odesolve &
     $ [t_0,t_N] : \mathbb{R} \times \mathbb{R} , k : \mathbb{N} , 
-    {\bf x_0} : \mathbb{C}^n , {\bf f} : \mathbb{R} \times \mathbb{C}^n 
-    \rightarrow \mathbb{C}^n $ &
+    {\bf x_0} : \mathbb{R}^n , {\bf f} : \mathbb{R} \times \mathbb{R}^n 
+    \rightarrow \mathbb{R}^n $ &
     $(\mathbb{N}^0 \times \mathbb{R} \rightarrow \mathbb{R})$ \texttt{code} & 
     LESS\_THAN\_2\_KNOTS \\
     \hline
@@ -486,6 +487,7 @@ Syntax of the access programs available after this binding time.
 \wss{You have complex numbers for your ode?  This is fine, but please make sure
   that your SRS documentation reflects this decision.  (I haven't checked to see
   what the SRS says.}
+\als{There should not be complex numbers, my mistake.}
 \wss{What does the type of the output code imply?  I'm not sure what the natural
   number is for?  I would have thought the output would be $\mathbb{R}
   \rightarrow \mathbb{C}^n$ (a function from time to the complex numbers
@@ -531,7 +533,7 @@ none
 
 \subsubsection{Local Functions} \wss{I don't see any complex numbers here.  Was
   there earlier introduction a mistake, or am I missing something?}
-
+\als{Yes, I've tried to fix the mistake.}
 These are other functions utilized by \lstinline[language=ML]|odesolve| to 
 generate its output. They also need to be implemented by the programmer(s).\\
 \\
@@ -573,7 +575,7 @@ $\equiv$ $(result_t)_i$ $\lor$ OUT\_OF\_RANGE
 
 This function takes the result of \lstinline[language=ML]|rk| and produces a 
 function that will return specific result values for specific inputs \wss{spell
-  check} within the 
+  check}\als{Done} within the 
 interval. $karray$ and $result$ are the same as above.
 
 \subsection{Generation Time}\label{ssec:generation-time}

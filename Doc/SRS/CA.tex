@@ -512,8 +512,8 @@ Symbol &${\bf f}$\\
   Equation&${\bf x'} = {\bf f} (t,{\bf x} (t))$\\
   \hline
   Description & 
-                 ${\bf f} : \mathbb{R} \times \mathbb{C}^n \rightarrow 
-                 \mathbb{C}^n$ is the equation for which we ultimately want to 
+                 ${\bf f} : \mathbb{R} \times \mathbb{R}^n \rightarrow 
+                 \mathbb{R}^n$ is the equation for which we ultimately want to 
                  find 
                  a numerical approximation. \wss{I don't think this is true.
                 You know $f$ and you are trying to find $x$.}
@@ -584,7 +584,7 @@ Symbol &${\bf f}$\\
         Equation& ${\bf x}(t_0) = {\bf x}_0$\\
         \hline
         Description & 
-        ${\bf x}_0 : \mathbb{C}^n$ are initial values for solving ODE (see 
+        ${\bf x}_0 : \mathbb{R}^n$ are initial values for solving ODE (see 
         \ddref{DD_ODE}).
         \\
         \hline
@@ -689,15 +689,15 @@ This section focuses on the problem that \famname{} is designed to solve.
   %${\bf x}(t_0) = {\bf x}_0$ \quad
   %where 
     \begin{itemize}
-      %\item ${\bf x} : \mathbb{R} \rightarrow \mathbb{C}^n$ is the 
+      %\item ${\bf x} : \mathbb{R} \rightarrow \mathbb{R}^n$ is the 
       %vector solution as a function of time
       \item ${\bf f} : 
-      \mathbb{R} \times \mathbb{C}^n \rightarrow \mathbb{C}^n$ is the function 
+      \mathbb{R} \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ is the function 
       describing the vector field (see \ddref{DD_ODE})
       \item $t_0, t_N : \mathbb{R} \times \mathbb{R}$ the bounds of the 
       interval within which to solve (see \ddref{DD_interval})
       \item ${\bf x}_0 : 
-      \mathbb{C}^n$ is the initial condition (see \ddref{DD_initialvalues})
+      \mathbb{R}^n$ is the initial condition (see \ddref{DD_initialvalues})
       \item $h : \mathbb{R}$ the step size (see \ddref{DD_stepsize})
     \end{itemize} 
 %   Given an initial value ${\bf x}_0$, the goal is to find approximations on a 
