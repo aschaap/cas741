@@ -16,7 +16,7 @@
 
 \begin{document}
 
-\title{RK Generator} 
+\title{Runge-Kutta (RK) Generator} 
 \author{Alexander Schaap}
 \date{\today}
 	
@@ -90,7 +90,8 @@ updated when development of the system proceeds.
 The scope of the testing of the RK Generator is restricted to correctness, in 
 some cases within an expected margin of error. Performance, while implied, 
 should also be measured. The implementation could be compared to an unstaged 
-version of the same code (plain OCaml rather than MetaOCaml; no generation). 
+version of the same code (plain OCaml code rather than MetaOCaml; no 
+generation). 
 Alternatively, a comparison against \textsc{\textsc{Matlab}} would give an 
 indication of 
 performance compared to the competition. This is a secondary goal though.
@@ -117,10 +118,14 @@ manual testing necessary.
 \subsection{Software Description}
 
 The RK Generator is a metaprogramming approach to a library of ODE solvers.
-It generates a function that will provide values for input on the given 
+Given a choice of RK method, an ODE, an interval, a step size and an initial 
+condition, it generates a function that will provide values for input on the 
+given 
 interval. This function will be unique to the inputs provided. During the 
 creation of this function, metaprogramming is also employed for performance 
 reasons.
+The parent program that called the generator can subsequently use the generated 
+code to solve specific points within the interval.
 
 \subsection{Test Team}
 
