@@ -16,6 +16,7 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{listings}
 
 \usepackage[round]{natbib}
 
@@ -230,6 +231,7 @@ better idea of what it should and should not do, though improvement could
 require them to update this document.
 For users (i.e. developers looking to incorporate this into their own 
 software), this document details the uses and limitations of the \famname{}.
+\nameref{ssec:intended-reader} covers the intended audience in more detail.
 
 \subsection{Scope of the Family}
 %loosely modelled after 3dfim+
@@ -249,14 +251,15 @@ interval and provide approximate solutions for them.
   to being in implicit form.}
 \als{I've added this.}
 
-\subsection{Characteristics of Intended Reader} 
+\subsection{Characteristics of Intended Reader}\label{ssec:intended-reader} 
 The reader is expected to have some undergraduate background in a math-heavy 
-science or engineering, as well as code generation. Ideally, they have been 
+science or engineering, as well as a graduate understanding of code generation. 
+Ideally, they have been 
 exposed to some undergraduate calculus courses that covered numerical methods 
 for ODE's.
-Programming courses would also help, especially some understanding of 
+Programming courses would also help, especially a graduate understanding of 
 functional programming and metaprogramming. 
-Metaprogramming may be beyond the scope of most undergraduate degrees though.
+%Metaprogramming may be beyond the scope of most undergraduate degrees though.
 \wss{For the characteristics of intended reader try to be
   more specific about the education.  What degree?  What course areas?  What
   level?}
@@ -317,6 +320,9 @@ external entity outside the software, which is the ``user'', or parent program
 making use of the generator as a library. A rectangle is used to represent the 
 generator as well as the \famname{} family members it can generate. 
 
+Using the library is as simple as using an \lstinline[language=ML]|open| 
+statement, though even this is not strictly necessary. If it is used, it will 
+be compiled into the parent program.
 Ideally, the parent program knows the ODE(s) and other inputs at compile time, 
 and provides them to the generator when calling it to generate family members.
 The parent program subsequently uses each generated family member many times at 
@@ -349,11 +355,10 @@ The most common user of \famname{} will be other programs. However, one or more
 programmers are needed to write the code that calls the functions provided by 
 this family.
 These programmers therefore should have an understanding of ODEs, the accuracy 
-of numerical approximation (using RK methods) and OCaml programming. (Knowledge 
+of numerical approximation (using RK methods) and OCaml programming. Knowledge 
 of MetaOCaml should not be necessary 
-if the program family is able to hide its usage thereof sufficiently).
-                                                                                
-                          
+if the program family is able to hide its usage thereof sufficiently.
+
 \subsection{Potential System Constraints}
 
 The responsibility of generating family members in a type-safe way restricts 
@@ -628,7 +633,8 @@ Symbol &${\bf f}$\\
 
 \subsection{Goal Statements}
 
-\noindent Given the specified ODE (\ddref{DD_ODE}; non-stiff and continuous, as 
+\noindent Given an RK method specification, the specified ODE (\ddref{DD_ODE}; 
+non-stiff and continuous, as 
 per 
 \aref{A_ODEnonstiffcontinuous}), an interval (\ddref{DD_interval}) and the 
 desired step 
@@ -638,7 +644,7 @@ an initial condition (\ddref{DD_initialvalues}), the goal statement is:
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] Given 
-an RK method specification, calculate solutions for and generate (in a 
+Calculate solutions for and generate (in a 
 type-safe manner) a 
 function that uses these solutions to solve for specific points (multiples of 
 the step size) within the provided 
