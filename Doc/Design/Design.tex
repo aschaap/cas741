@@ -526,11 +526,16 @@ none
   \texttt{code}
   \begin{itemize}
     \item Code that contains a function that will provide a solution for points 
-    such that point $p = t_0 + m \times h$ based on precomputed knowledge
-    embedded in it by the generator. \wss{This doesn't actually make things any
+    such that point $p = t_0 + m \times h$ where $m \in \mathbb{N}^0$ and $p 
+    \in \mathbb{R}$ based on precomputed knowledge
+    embedded in it by the generator. This is the second argument. The first 
+    argument is an index ($\in \mathbb{N}^0, < n$ where $n$ is the length of 
+    the resulting vector) to select the desired element 
+    from the resulting vector. \wss{This doesn't actually make things any
       clearer.  I guess the natural number is $m$?  What happened to the complex
       numbers?  Your initial values were a sequence of values, corresponding to
       state variables $x_1$, $x_2$, ... $x_n$.  What happened to this sequence?}
+    \als{I tried to explain it more clearly.}
   \end{itemize}
   \item exception: $exc := (k < 2 \Rightarrow$ LESS\_THAN\_2\_KNOTS)
   \begin{itemize}
